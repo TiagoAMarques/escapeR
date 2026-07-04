@@ -72,8 +72,8 @@
       story = "A mirror shows a table, but only missing values cast shadows.",
       task = "Using survey_counts(), submit the number of missing values in the whole data set.",
       hint = "is.na() finds missing values. sum() can count TRUE values.",
-      checker = function(answer) identical(as.integer(answer), 0L),
-      success = "No shadows today. Still, checking missingness is a habit worth keeping."
+      checker = function(answer) identical(as.integer(answer), 2L),
+      success = "Two shadows found. Missing values are not embarrassing; pretending they are not there is."
     ),
     list(
       id = 7,
@@ -104,7 +104,7 @@
       learning_goal = "Subset data frames using logical conditions.",
       story = "A drawer labelled wetland is locked by a mean count.",
       task = "Using survey_counts(), submit the mean count for the wetland records.",
-      hint = "Use a logical condition inside square brackets to keep one habitat before taking the mean.",
+      hint = "Use a logical condition inside square brackets to keep one habitat before taking the mean. If missing values appear, mean() has an argument that can remove them.",
       checker = function(answer) .num_equal(answer, 19),
       success = "The wetland drawer opens with a soft statistical sigh."
     ),
@@ -171,7 +171,7 @@
       story = "The transect logbook asks how many animals were actually seen.",
       task = "Using survey_counts(), submit the total number of detected records.",
       hint = "The detected column is logical, and R treats TRUE as 1 and FALSE as 0 when summed.",
-      checker = function(answer) identical(as.integer(answer), 8L),
+      checker = function(answer) identical(as.integer(answer), 9L),
       success = "The logbook closes. Counts of detections are observations, not yet abundance."
     ),
     list(
@@ -182,7 +182,7 @@
       story = "A gate marked 100 m asks how many records would remain inside it.",
       task = "Using survey_counts(), count records with distance_m <= 100. Submit that count.",
       hint = "A logical comparison can be counted with sum().",
-      checker = function(answer) identical(as.integer(answer), 10L),
+      checker = function(answer) identical(as.integer(answer), 12L),
       success = "The gate swings open. Truncation is a modelling choice, not a clerical detail."
     ),
     list(

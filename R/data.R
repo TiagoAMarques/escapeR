@@ -1,10 +1,10 @@
 .survey_counts <- function() {
   data.frame(
-    site = paste0("S", 1:12),
-    habitat = rep(c("forest", "scrub", "wetland"), each = 4),
-    count = c(12, 15, 11, 14, 6, 9, 7, 8, 18, 21, 17, 20),
-    distance_m = c(15, 40, 70, 95, 20, 55, 80, 110, 10, 35, 65, 120),
-    detected = c(TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, FALSE),
+    site = paste0("S", 1:14),
+    habitat = c(rep(c("forest", "scrub", "wetland"), each = 4), "forest", "wetland"),
+    count = c(12, 15, 11, 14, 6, 9, 7, 8, 18, 21, 17, 20, NA, NA),
+    distance_m = c(15, 40, 70, 95, 20, 55, 80, 110, 10, 35, 65, 120, 45, 85),
+    detected = c(TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE),
     stringsAsFactors = FALSE
   )
 }

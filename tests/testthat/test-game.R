@@ -11,6 +11,7 @@ test_that("game can start and accept first answer", {
 })
 
 test_that("helper data have expected shape", {
-  expect_equal(nrow(survey_counts()), 12)
+  expect_equal(nrow(survey_counts()), 14)
+  expect_equal(sum(is.na(survey_counts())), 2)
   expect_equal(nrow(read.csv(escapeR_file("dados1.csv"))), 25)
 })
