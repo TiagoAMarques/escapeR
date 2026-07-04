@@ -9,6 +9,37 @@
   )
 }
 
+.detection_plot_data <- function() {
+  distance_m <- c(
+    5, 8, 12, 15, 18, 22, 25, 28,
+    31, 35, 38, 42, 45, 48, 52, 55,
+    58, 62, 65, 68, 72, 75, 78, 82,
+    85, 88, 92, 95, 98, 102, 106, 110,
+    115, 120, 126, 132
+  )
+  detected <- c(
+    TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE,
+    TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE,
+    TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE,
+    TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,
+    FALSE, FALSE, FALSE, FALSE
+  )
+  jitter_y <- c(
+    -0.06, 0.05, -0.02, 0.03, -0.04, 0.06, -0.01, 0.04,
+    -0.05, 0.02, 0.05, -0.03, 0.01, -0.06, 0.04, -0.02,
+    0.06, -0.04, 0.03, -0.01, 0.05, -0.05, 0.02, -0.03,
+    0.04, -0.02, 0.03, -0.05, 0.01, -0.03, 0.04, -0.01,
+    0.05, -0.04, 0.02, -0.06
+  )
+
+  data.frame(
+    distance_m = distance_m,
+    detected = detected,
+    plot_y = as.integer(detected) + jitter_y,
+    stringsAsFactors = FALSE
+  )
+}
+
 .tutorial_data <- function() {
   data.frame(
     ID = 1:25,
@@ -24,6 +55,7 @@
     return(invisible(FALSE))
   }
   utils::write.csv(.survey_counts(), file.path(dir, "survey_counts.csv"), row.names = FALSE)
+  utils::write.csv(.detection_plot_data(), file.path(dir, "detection_plot_data.csv"), row.names = FALSE)
   utils::write.csv(.tutorial_data(), file.path(dir, "dados1.csv"), row.names = FALSE)
   invisible(TRUE)
 }

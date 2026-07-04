@@ -21,19 +21,21 @@ survey_counts <- function() {
 #'
 #' @return Invisibly returns the plotted data.
 plot_detection <- function() {
-  d <- survey_counts()
+  d <- .detection_plot_data()
   old <- par(no.readonly = TRUE)
   on.exit(par(old), add = TRUE)
   plot(
     d$distance_m,
-    as.integer(d$detected),
+    d$plot_y,
     xlab = "Distance from transect (m)",
     ylab = "Detected",
     yaxt = "n",
+    ylim = c(-0.15, 1.15),
     pch = 19,
     col = ifelse(d$detected, "#0072B2", "#D55E00"),
     main = "Detection is an observation process"
   )
   axis(2, at = c(0, 1), labels = c("no", "yes"))
+  abline(h = c(0, 1), col = "grey85", lty = 3)
   invisible(d)
 }
