@@ -1,0 +1,13 @@
+site,habitat,count,distance_m,detected
+S1,forest,12,15,TRUE
+S2,forest,15,40,TRUE
+S3,forest,11,70,TRUE
+S4,forest,14,95,FALSE
+S5,scrub,6,20,TRUE
+S6,scrub,9,55,TRUE
+S7,scrub,7,80,FALSE
+S8,scrub,8,110,FALSE
+S9,wetland,18,10,TRUE
+S10,wetland,21,35,TRUE
+S11,wetland,17,65,TRUE
+S12,wetland,20,120,FALSE
