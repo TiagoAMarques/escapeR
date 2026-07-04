@@ -25,13 +25,6 @@ install.packages("remotes")
 remotes::install_github("TiagoAMarques/escapeR")
 ```
 
-Then:
-
-```r
-library(escapeR)
-start_escape()
-```
-
 ## Play
 
 ```r
