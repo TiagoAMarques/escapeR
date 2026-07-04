@@ -83,7 +83,8 @@ submit <- function(answer) {
 
   ok <- isTRUE(room$checker(answer))
   if (!ok) {
-    message("The lock does not move yet. Try again, or call hint().")
+    message(.failure_message(room))
+    message("Try again, or call hint() if you want a nudge.")
     return(invisible(FALSE))
   }
 
@@ -164,11 +165,12 @@ reset_game <- function(player = NULL) {
 
 #' List all escape rooms
 #'
-#' @return A data frame with room identifiers, titles, and learning goals.
+#' @return A data frame with room identifiers, modules, titles, and learning goals.
 list_rooms <- function() {
   rooms <- .rooms()
   data.frame(
     room = as.integer(vapply(rooms, `[[`, numeric(1), "id")),
+    module = vapply(rooms, `[[`, character(1), "module"),
     title = vapply(rooms, `[[`, character(1), "title"),
     learning_goal = vapply(rooms, `[[`, character(1), "learning_goal"),
     stringsAsFactors = FALSE

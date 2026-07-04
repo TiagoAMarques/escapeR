@@ -2,8 +2,9 @@
 
 `escapeR` is an R package prototype for a classroom escape-room game. Students
 learn R by solving small ecological-statistics puzzles: arithmetic, vectors,
-CSV files, plots, subsetting, simple models, observation processes, and
-reproducible Quarto workflows.
+objects, CSV files, data inspection, plots, subsetting, simple models,
+predictions, observation processes, distance-sampling ideas, and reproducible
+Quarto workflows.
 
 The first version is inspired by:
 
@@ -31,42 +32,6 @@ library(escapeR)
 start_escape()
 ```
 
-## Create the GitHub repository
-
-Use this folder as the repository root:
-
-```text
-C:/Users/tiago/Dropbox/Pessoal/Curriculo/Agregação/Minha/codex/escapeR
-```
-
-From a terminal in that folder:
-
-```bash
-git init
-git add .
-git commit -m "Initial escapeR package"
-git branch -M main
-git remote add origin https://github.com/TiagoAMarques/escapeR.git
-git push -u origin main
-```
-
-Alternatively, create a new GitHub repository named `escapeR` in the browser and
-upload the complete contents of this folder.
-
-## Install locally
-
-From the parent directory:
-
-```r
-install.packages("escapeR", repos = NULL, type = "source")
-```
-
-Or during development:
-
-```r
-devtools::load_all(".")
-```
-
 ## Play
 
 ```r
@@ -92,14 +57,22 @@ can resume later on the same machine.
 
 ## Current room sequence
 
-1. The Console Door: arithmetic and expressions.
-2. The Vector Cabinet: vectors and summaries.
-3. The Data Table Hatch: reading CSV files.
-4. The Plotting Window: plotting detection against distance.
-5. The Subsetting Lock: logical subsetting in data frames.
-6. The Model Room: fitting and interpreting a simple model.
-7. The Observation Filter: distance-sampling assumptions.
-8. The Quarto Exit: reproducible reports.
+The current game has 18 rooms arranged across seven course modules:
+
+1. R foundations: console arithmetic, vectors, and named objects.
+2. Data import and inspection: CSV import, column names, and missing values.
+3. Visualisation: detection plots and categorical summaries.
+4. Data manipulation: subsetting and ordering data frames.
+5. Ecological modelling: model fitting, residuals, and prediction.
+6. Distance sampling: observation processes, detections, and truncation.
+7. Reproducible workflow: comments and Quarto source files.
+
+Use `list_rooms()` to see every room, module, and learning goal.
+
+Wrong answers now return a short encouraging message that points students back
+to the habits that make R and statistics useful for ecologists: checking object
+names, inspecting data structure, iterating carefully, and treating models as
+tools for thinking rather than magic doors.
 
 ## Instructor notes
 

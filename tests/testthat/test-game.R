@@ -1,7 +1,7 @@
 test_that("rooms can be listed", {
   rooms <- list_rooms()
-  expect_equal(nrow(rooms), 8)
-  expect_true(all(c("room", "title", "learning_goal") %in% names(rooms)))
+  expect_equal(nrow(rooms), 18)
+  expect_true(all(c("room", "module", "title", "learning_goal") %in% names(rooms)))
 })
 
 test_that("game can start and accept first answer", {
