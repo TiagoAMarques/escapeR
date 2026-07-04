@@ -55,8 +55,8 @@
       title = "The Model Room",
       learning_goal = "Fit and interpret a simple linear model.",
       story = "A whiteboard says abundance is never just a number; it is a relationship.",
-      task = "Fit lm(count ~ distance_m, data = survey_counts()). Is the distance slope positive or negative? Submit 'negative'.",
-      hint = "Look at coef(lm(count ~ distance_m, data = survey_counts())).",
+      task = "Fit lm(count ~ distance_m, data = survey_counts()). Look at the distance_m coefficient. Is it above or below zero?",
+      hint = "coef(lm(count ~ distance_m, data = survey_counts())) gives the model coefficients. The second one belongs to distance_m.",
       checker = function(answer) tolower(trimws(as.character(answer))) %in% c("negative", "neg", "-"),
       success = "The model room unlocks. Coefficients are clues, not decorations."
     ),
@@ -65,8 +65,8 @@
       title = "The Observation Filter",
       learning_goal = "Connect observed data to an imperfect observation process.",
       story = "Two panels appear: state process and observation process. Only one controls what you actually see.",
-      task = "In distance sampling, what is the usual detection probability at distance zero? Submit 1.",
-      hint = "A core conventional assumption is certain detection on the line or at the point.",
+      task = "In conventional distance sampling, objects exactly on the line or at the point are assumed to be detected with certainty. What detection probability does 'certainty' correspond to?",
+      hint = "A probability of 0 means impossible; a probability of 1 means certain.",
       checker = function(answer) isTRUE(all.equal(as.numeric(answer), 1)),
       success = "The observation filter hums. You have seen the difference between animals and detections."
     ),

@@ -31,6 +31,42 @@ library(escapeR)
 start_escape()
 ```
 
+## Create the GitHub repository
+
+Use this folder as the repository root:
+
+```text
+C:/Users/tiago/Dropbox/Pessoal/Curriculo/Agregação/Minha/codex/escapeR
+```
+
+From a terminal in that folder:
+
+```bash
+git init
+git add .
+git commit -m "Initial escapeR package"
+git branch -M main
+git remote add origin https://github.com/TiagoAMarques/escapeR.git
+git push -u origin main
+```
+
+Alternatively, create a new GitHub repository named `escapeR` in the browser and
+upload the complete contents of this folder.
+
+## Install locally
+
+From the parent directory:
+
+```r
+install.packages("escapeR", repos = NULL, type = "source")
+```
+
+Or during development:
+
+```r
+devtools::load_all(".")
+```
+
 ## Play
 
 ```r
@@ -64,3 +100,15 @@ can resume later on the same machine.
 6. The Model Room: fitting and interpreting a simple model.
 7. The Observation Filter: distance-sampling assumptions.
 8. The Quarto Exit: reproducible reports.
+
+## Instructor notes
+
+This is intentionally small and dependency-light. It can grow in several
+directions:
+
+- more rooms per course module;
+- Portuguese and English text modes;
+- instructor-authored room packs;
+- Shiny or learnr front ends;
+- classroom leaderboards;
+- automated export of student progress.
