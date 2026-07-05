@@ -99,6 +99,18 @@
     ),
     list(
       id = 9,
+      module = "Visualisation",
+      title = "The Hidden Data",
+      learning_goal = "Discover that plotted data can reveal structure hidden in plain text.",
+      story = "A file sits on the bench, ordinary at first glance but quietly insistent.",
+      task = "Data can sometimes contain more of something than what meets the eye at first. Can you find in the data hidden in escapeR_file('datahide.txt') what it is that data might contain hidden?",
+      hint = "You must plot the data in just the right way!",
+      checker = function(answer) identical(.answer_text(answer), "information"),
+      failure = "That is not the information we are looking for; please try again!",
+      success = "The plotted points settle into meaning. Some data keep their secrets until you ask visually."
+    ),
+    list(
+      id = 10,
       module = "Data manipulation",
       title = "The Subsetting Lock",
       learning_goal = "Subset data frames using logical conditions.",
@@ -109,7 +121,7 @@
       success = "The wetland drawer opens with a soft statistical sigh."
     ),
     list(
-      id = 10,
+      id = 11,
       module = "Data manipulation",
       title = "The Sorting Staircase",
       learning_goal = "Order data and inspect extreme observations.",
@@ -120,7 +132,7 @@
       success = "The staircase locks into order. Extremes often deserve a second look."
     ),
     list(
-      id = 11,
+      id = 12,
       module = "Ecological modelling",
       title = "The Model Room",
       learning_goal = "Fit and interpret a simple linear model.",
@@ -131,7 +143,7 @@
       success = "The model room unlocks. Coefficients are clues, not decorations."
     ),
     list(
-      id = 12,
+      id = 13,
       module = "Ecological modelling",
       title = "The Residual Drawer",
       learning_goal = "Understand that fitted models leave residual variation.",
@@ -142,7 +154,7 @@
       success = "The drawer quiets. Residuals are not failure; they are the part still asking questions."
     ),
     list(
-      id = 13,
+      id = 14,
       module = "Ecological modelling",
       title = "The Prediction Lantern",
       learning_goal = "Use a fitted model to predict for a new ecological setting.",
@@ -153,7 +165,7 @@
       success = "The lantern glows. Prediction is interpolation with assumptions attached."
     ),
     list(
-      id = 14,
+      id = 15,
       module = "Distance sampling",
       title = "The Observation Filter",
       learning_goal = "Connect observed data to an imperfect observation process.",
@@ -164,7 +176,7 @@
       success = "The observation filter hums. You have seen the difference between animals and detections."
     ),
     list(
-      id = 15,
+      id = 16,
       module = "Distance sampling",
       title = "The Detection Counter",
       learning_goal = "Summarize detections as observed outcomes.",
@@ -175,7 +187,7 @@
       success = "The logbook closes. Counts of detections are observations, not yet abundance."
     ),
     list(
-      id = 16,
+      id = 17,
       module = "Distance sampling",
       title = "The Truncation Gate",
       learning_goal = "Think about distance cutoffs and retained observations.",
@@ -186,7 +198,7 @@
       success = "The gate swings open. Truncation is a modelling choice, not a clerical detail."
     ),
     list(
-      id = 17,
+      id = 18,
       module = "Reproducible workflow",
       title = "The Comment Cipher",
       learning_goal = "Recognize comments as part of readable R code.",
@@ -197,7 +209,7 @@
       success = "The cipher accepts the mark. Good comments explain why the code exists."
     ),
     list(
-      id = 18,
+      id = 19,
       module = "Reproducible workflow",
       title = "The Quarto Exit",
       learning_goal = "Recognize reproducible reports as part of the analysis workflow.",
@@ -219,6 +231,10 @@
 }
 
 .failure_message <- function(room) {
+  if (!is.null(room$failure)) {
+    return(room$failure)
+  }
+
   messages <- c(
     "Not yet. Ecology is full of noisy observations; R lets us be patiently wrong until the pattern becomes clearer.",
     "The lock remains unconvinced. That is fine: statistical thinking is mostly careful iteration with better bookkeeping.",

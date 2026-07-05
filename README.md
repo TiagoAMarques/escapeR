@@ -50,11 +50,11 @@ can resume later on the same machine.
 
 ## Current room sequence
 
-The current game has 18 rooms arranged across seven course modules:
+The current game has 19 rooms arranged across seven course modules:
 
 1. R foundations: console arithmetic, vectors, and named objects.
 2. Data import and inspection: CSV import, column names, and missing values.
-3. Visualisation: detection plots and categorical summaries.
+3. Visualisation: detection plots, categorical summaries, and hidden structure in data.
 4. Data manipulation: subsetting and ordering data frames.
 5. Ecological modelling: model fitting, residuals, and prediction.
 6. Distance sampling: observation processes, detections, and truncation.
