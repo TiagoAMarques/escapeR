@@ -8,7 +8,9 @@ Quarto workflows.
 
 ![The escapeR Educational Experience](The_escapeR_Educational_Experience.png)
 
-PLease do not get your expectations too high. This is currently a pet project that started as a great way to procrastinate while preparing my habilitation process. The image above reflects a vision, the reality might not live to the expectation, yet. 
+Please do not get your expectations too high. This is currently a pet project that started as a great way to procrastinate while preparing my habilitation process. The image above reflects a vision, the reality might not live to the expectation, yet. 
+
+![The escapeR Educational Experience](escapeR_Expectation_vs_Reality.png)
 
 The first version is inspired by:
 
