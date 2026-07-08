@@ -14,10 +14,12 @@ The first version is inspired by:
 
 - `TiagoAMarques/AnIntro2RTutorial`, especially the beginner-friendly path from
   R as a calculator to data files, plots, commented code, and Quarto reports.
-- The ecological-statistics course material, especially the idea that students
+- The Ecological Statistics course material, especially the idea that students
   need to reason from noisy observations back to ecological processes.
-- The distance-sampling lesson, especially detection, distance, abundance,
+- The Distance Sampling lesson, especially detection, distance, abundance,
   observation filters, and assumptions.
+
+  If you have suggestions for rooms, please reach out. I would be happy to have co-authors on this package :) 
 
 ## Install from GitHub
 
