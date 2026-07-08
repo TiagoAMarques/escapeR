@@ -15,9 +15,9 @@
       title = "The Console Door",
       learning_goal = "Use R as a calculator and learn expression order.",
       story = "A keypad blinks beside the first door. It accepts only an R result.",
-      task = "Run this in R and submit the result: 6 * 7.",
+      task = "The pad code is the weight, in grams, of 10 individuals of species A and 8 animals of species B, each of them weighing exactly 3 grams and 5 grams, respectively.",
       hint = "R follows normal arithmetic rules. Multiplication uses *.",
-      checker = function(answer) .num_equal(answer, 42),
+      checker = function(answer) .num_equal(answer, 70),
       success = "The keypad clicks. The console trusts you now."
     ),
     list(

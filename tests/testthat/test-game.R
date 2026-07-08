@@ -7,7 +7,7 @@ test_that("rooms can be listed", {
 test_that("game can start and accept first answer", {
   player <- paste0("test_", Sys.getpid())
   start_escape(player = player, reset = TRUE)
-  expect_true(submit(42))
+  expect_true(submit(70))
 })
 
 test_that("helper data have expected shape", {

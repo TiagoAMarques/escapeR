@@ -10,7 +10,7 @@
   }
 
   packageStartupMessage("Welcome to escapeR.")
-  packageStartupMessage("A virtual ecology lab door is locked. R is the key.")
+  packageStartupMessage("A virtual ecological statistics lab door is locked. Unfortunately, you are on the inside! And there are many pressing conservation problems outside you need to start working on. R might just be the key to get started solving them.")
   packageStartupMessage("Type start_escape() to begin or resume your game.")
 
   answer <- tryCatch(
