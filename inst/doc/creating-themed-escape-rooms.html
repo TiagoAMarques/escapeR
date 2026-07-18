@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Creating themed escape rooms with escapeR</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Creating themed escape rooms with
+escapeR</h1>
+
+
+
+<p><code>escapeR</code> was first created inside an Ecological
+Statistics course. The bundled rooms therefore use ecological examples:
+field counts, survey data, detection, modelling, and reproducible
+reporting. The package architecture is more general than that, however.
+An escape room is just a sequence of small tasks where students use R to
+unlock the next step.</p>
+<p>This vignette explains how to create rooms in any theme, such as
+medicine, agriculture, social sciences, economics, psychology, or
+environmental policy. It also shows how to bundle those rooms into a
+shareable room pack that can be submitted to the <code>escapeR</code>
+GitHub repository.</p>
+<div id="the-room-architecture" class="section level2">
+<h2>The room architecture</h2>
+<p>Every room is built from separate components:</p>
+<ul>
+<li><code>id</code>: a short unique identifier, at most 8 characters,
+such as <code>&quot;bpmean&quot;</code> or <code>&quot;yield&quot;</code>.</li>
+<li><code>module</code>: the broad teaching module, such as
+<code>&quot;Medicine&quot;</code> or <code>&quot;Agriculture&quot;</code>.</li>
+<li><code>title</code>: the room title shown to students.</li>
+<li><code>learning_goal</code>: what the student should practise.</li>
+<li><code>introduction</code>: the story or setting.</li>
+<li><code>challenge</code>: the task the student must solve.</li>
+<li><code>hints</code>: one or more hints. Repeated calls to
+<code>hint()</code> reveal them in order.</li>
+<li><code>correct_result</code>: the expected answer for simple numeric
+or text answers.</li>
+<li><code>checker</code>: an optional custom function for more complex
+answer checking.</li>
+<li><code>success</code>: the message shown after a correct answer.</li>
+<li><code>failure</code>: an optional message shown after a wrong
+answer.</li>
+</ul>
+<p>Most beginner rooms only need <code>correct_result</code>. For
+example, if the correct answer is <code>130</code>, <code>escapeR</code>
+checks numeric submissions with a small tolerance. If the correct answer
+is <code>&quot;high&quot;</code>, <code>escapeR</code> checks text after trimming
+spaces and ignoring case. Use <code>checker</code> when you need more
+control.</p>
+</div>
+<div id="step-1-choose-a-theme" class="section level2">
+<h2>Step 1: choose a theme</h2>
+<p>Start with a familiar domain and a small learning goal. Good first
+rooms are short, concrete, and assess one idea at a time.</p>
+<p>Examples:</p>
+<ul>
+<li>Medicine: calculate an average blood pressure, count high-risk
+patients, or interpret a positive/negative test result.</li>
+<li>Agriculture: calculate mean crop yield, compare fertilizer
+treatments, or count plots affected by drought.</li>
+<li>Social sciences: calculate average survey satisfaction, tabulate
+responses, or classify whether an unemployment rate increased.</li>
+</ul>
+<p>For a first contribution, aim for two or three rooms. That is enough
+to create a small story arc while keeping the pull request easy to
+review.</p>
+</div>
+<div id="step-2-create-individual-rooms" class="section level2">
+<h2>Step 2: create individual rooms</h2>
+<p>The example below creates a tiny medicine-themed escape room. The
+first room asks students to create a vector and calculate a mean. The
+second asks them to use a logical comparison and submit a category. The
+third asks for a simple proportion.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(escapeR)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>bpmean <span class="ot">&lt;-</span> <span class="fu">new_room</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="at">id =</span> <span class="st">&quot;bpmean&quot;</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>  <span class="at">module =</span> <span class="st">&quot;Medicine&quot;</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">&quot;The Clinic Intake&quot;</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="at">learning_goal =</span> <span class="st">&quot;Create a numeric vector and calculate its mean.&quot;</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>  <span class="at">introduction =</span> <span class="fu">paste</span>(</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>    <span class="st">&quot;A clinic intake sheet lists systolic blood pressure readings for&quot;</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>    <span class="st">&quot;three patients seen before lunch.&quot;</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>  ),</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>  <span class="at">challenge =</span> <span class="fu">paste</span>(</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>    <span class="st">&quot;Create a vector with the values 120, 130, and 140.&quot;</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>    <span class="st">&quot;What is the average systolic blood pressure? Submit the mean.&quot;</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>  ),</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>  <span class="at">hints =</span> <span class="fu">c</span>(</span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>    <span class="st">&quot;Use c() to combine the three readings into one vector.&quot;</span>,</span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>    <span class="st">&quot;Use mean() to calculate the average of a numeric vector.&quot;</span></span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>  ),</span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>  <span class="at">correct_result =</span> <span class="dv">130</span>,</span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>  <span class="at">success =</span> <span class="st">&quot;The intake sheet is complete, and the first cabinet opens.&quot;</span>,</span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>  <span class="at">failure =</span> <span class="st">&quot;Not quite. Check that all three readings are included before taking the mean.&quot;</span></span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>)</span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a>riskcat <span class="ot">&lt;-</span> <span class="fu">new_room</span>(</span>
+<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a>  <span class="at">id =</span> <span class="st">&quot;riskcat&quot;</span>,</span>
+<span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a>  <span class="at">module =</span> <span class="st">&quot;Medicine&quot;</span>,</span>
+<span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">&quot;The Risk Label&quot;</span>,</span>
+<span id="cb1-29"><a href="#cb1-29" tabindex="-1"></a>  <span class="at">learning_goal =</span> <span class="st">&quot;Use a logical comparison to classify a value.&quot;</span>,</span>
+<span id="cb1-30"><a href="#cb1-30" tabindex="-1"></a>  <span class="at">introduction =</span> <span class="fu">paste</span>(</span>
+<span id="cb1-31"><a href="#cb1-31" tabindex="-1"></a>    <span class="st">&quot;A label printer waits beside the triage desk.&quot;</span>,</span>
+<span id="cb1-32"><a href="#cb1-32" tabindex="-1"></a>    <span class="st">&quot;It needs the correct risk category for the next patient.&quot;</span></span>
+<span id="cb1-33"><a href="#cb1-33" tabindex="-1"></a>  ),</span>
+<span id="cb1-34"><a href="#cb1-34" tabindex="-1"></a>  <span class="at">challenge =</span> <span class="fu">paste</span>(</span>
+<span id="cb1-35"><a href="#cb1-35" tabindex="-1"></a>    <span class="st">&quot;A systolic blood pressure of 145 is considered high if it is above 140.&quot;</span>,</span>
+<span id="cb1-36"><a href="#cb1-36" tabindex="-1"></a>    <span class="st">&quot;Submit high or normal.&quot;</span></span>
+<span id="cb1-37"><a href="#cb1-37" tabindex="-1"></a>  ),</span>
+<span id="cb1-38"><a href="#cb1-38" tabindex="-1"></a>  <span class="at">hints =</span> <span class="fu">c</span>(</span>
+<span id="cb1-39"><a href="#cb1-39" tabindex="-1"></a>    <span class="st">&quot;Ask R whether 145 &gt; 140.&quot;</span>,</span>
+<span id="cb1-40"><a href="#cb1-40" tabindex="-1"></a>    <span class="st">&quot;If the comparison is TRUE, the category requested by the room is high.&quot;</span></span>
+<span id="cb1-41"><a href="#cb1-41" tabindex="-1"></a>  ),</span>
+<span id="cb1-42"><a href="#cb1-42" tabindex="-1"></a>  <span class="at">correct_result =</span> <span class="st">&quot;high&quot;</span>,</span>
+<span id="cb1-43"><a href="#cb1-43" tabindex="-1"></a>  <span class="at">success =</span> <span class="st">&quot;The label prints clearly, and the triage desk unlocks.&quot;</span></span>
+<span id="cb1-44"><a href="#cb1-44" tabindex="-1"></a>)</span>
+<span id="cb1-45"><a href="#cb1-45" tabindex="-1"></a></span>
+<span id="cb1-46"><a href="#cb1-46" tabindex="-1"></a>posprop <span class="ot">&lt;-</span> <span class="fu">new_room</span>(</span>
+<span id="cb1-47"><a href="#cb1-47" tabindex="-1"></a>  <span class="at">id =</span> <span class="st">&quot;posprop&quot;</span>,</span>
+<span id="cb1-48"><a href="#cb1-48" tabindex="-1"></a>  <span class="at">module =</span> <span class="st">&quot;Medicine&quot;</span>,</span>
+<span id="cb1-49"><a href="#cb1-49" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">&quot;The Test Result Board&quot;</span>,</span>
+<span id="cb1-50"><a href="#cb1-50" tabindex="-1"></a>  <span class="at">learning_goal =</span> <span class="st">&quot;Calculate a proportion from counts.&quot;</span>,</span>
+<span id="cb1-51"><a href="#cb1-51" tabindex="-1"></a>  <span class="at">introduction =</span> <span class="fu">paste</span>(</span>
+<span id="cb1-52"><a href="#cb1-52" tabindex="-1"></a>    <span class="st">&quot;A result board shows 8 positive tests out of 40 tests performed.&quot;</span>,</span>
+<span id="cb1-53"><a href="#cb1-53" tabindex="-1"></a>    <span class="st">&quot;The ward door asks for the positive proportion.&quot;</span></span>
+<span id="cb1-54"><a href="#cb1-54" tabindex="-1"></a>  ),</span>
+<span id="cb1-55"><a href="#cb1-55" tabindex="-1"></a>  <span class="at">challenge =</span> <span class="st">&quot;Submit the proportion of tests that were positive.&quot;</span>,</span>
+<span id="cb1-56"><a href="#cb1-56" tabindex="-1"></a>  <span class="at">hints =</span> <span class="fu">c</span>(</span>
+<span id="cb1-57"><a href="#cb1-57" tabindex="-1"></a>    <span class="st">&quot;A proportion is part divided by whole.&quot;</span>,</span>
+<span id="cb1-58"><a href="#cb1-58" tabindex="-1"></a>    <span class="st">&quot;In R, calculate 8 / 40.&quot;</span></span>
+<span id="cb1-59"><a href="#cb1-59" tabindex="-1"></a>  ),</span>
+<span id="cb1-60"><a href="#cb1-60" tabindex="-1"></a>  <span class="at">correct_result =</span> <span class="fl">0.2</span>,</span>
+<span id="cb1-61"><a href="#cb1-61" tabindex="-1"></a>  <span class="at">success =</span> <span class="st">&quot;The board accepts the proportion, and the ward door opens.&quot;</span></span>
+<span id="cb1-62"><a href="#cb1-62" tabindex="-1"></a>)</span></code></pre></div>
+<p>Notice that each room is self-contained. The student sees the
+introduction and challenge, but the correct result and hints are stored
+separately. This makes rooms easier to review, edit, translate, and
+reuse.</p>
+</div>
+<div id="step-3-bundle-rooms-into-a-pack" class="section level2">
+<h2>Step 3: bundle rooms into a pack</h2>
+<p>A room pack is the unit that is easiest to share. It contains a pack
+ID, a short description, the rooms, and one or more named escape
+sequences. A sequence is just an ordered vector of room IDs.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>medicine_pack <span class="ot">&lt;-</span> <span class="fu">new_room_pack</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="at">id =</span> <span class="st">&quot;medpack&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">&quot;Introductory medicine rooms&quot;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="at">description =</span> <span class="fu">paste</span>(</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>    <span class="st">&quot;A small set of medicine-themed rooms for practising vectors,&quot;</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>    <span class="st">&quot;means, comparisons, and proportions.&quot;</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  ),</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>  <span class="at">rooms =</span> <span class="fu">list</span>(bpmean, riskcat, posprop),</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>  <span class="at">escapes =</span> <span class="fu">list</span>(</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>    <span class="at">medmini =</span> <span class="fu">c</span>(<span class="st">&quot;bpmean&quot;</span>, <span class="st">&quot;riskcat&quot;</span>),</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>    <span class="at">medfull =</span> <span class="fu">c</span>(<span class="st">&quot;bpmean&quot;</span>, <span class="st">&quot;riskcat&quot;</span>, <span class="st">&quot;posprop&quot;</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>  )</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>)</span></code></pre></div>
+<p>The pack can contain more than one escape sequence. In this example,
+<code>medmini</code> is a two-room activity and <code>medfull</code>
+uses all three rooms.</p>
+</div>
+<div id="step-4-test-locally" class="section level2">
+<h2>Step 4: test locally</h2>
+<p>Register the pack in your R session, inspect the rooms and escape
+sequences, and then start a test game.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">register_room_pack</span>(medicine_pack, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">list_rooms</span>()</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt;         room      id                     module                    title</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; console    1 console              R foundations         The Console Door</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; vector     2  vector              R foundations       The Vector Cabinet</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; naming     3  naming              R foundations         The Naming Shelf</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; datatab    4 datatab Data import and inspection     The Data Table Hatch</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt; columns    5 columns Data import and inspection       The Column Scanner</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt; missing    6 missing Data import and inspection The Missing Value Mirror</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; plotwin    7 plotwin              Visualisation      The Plotting Window</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; habitat    8 habitat              Visualisation       The Habitat Mosaic</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; hidden     9  hidden              Visualisation          The Hidden Data</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt; subset    10  subset          Data manipulation      The Subsetting Lock</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; sorting   11 sorting          Data manipulation    The Sorting Staircase</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt; model     12   model       Ecological modelling           The Model Room</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt; resid     13   resid       Ecological modelling      The Residual Drawer</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt; predict   14 predict       Ecological modelling   The Prediction Lantern</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt; detectp   15 detectp          Distance sampling   The Observation Filter</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt; detect    16  detect          Distance sampling    The Detection Counter</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt; trunc     17   trunc          Distance sampling      The Truncation Gate</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt; comment   18 comment      Reproducible workflow       The Comment Cipher</span></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt; quarto    19  quarto      Reproducible workflow          The Quarto Exit</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt; bpmean    20  bpmean                   Medicine        The Clinic Intake</span></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt; posprop   21 posprop                   Medicine    The Test Result Board</span></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt; riskcat   22 riskcat                   Medicine           The Risk Label</span></span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="co">#&gt;                                                                 learning_goal</span></span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="co">#&gt; console                     Use R as a calculator and learn expression order.</span></span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a><span class="co">#&gt; vector                      Create vectors and summarize them with functions.</span></span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a><span class="co">#&gt; naming                        Store values in objects and inspect them later.</span></span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a><span class="co">#&gt; datatab                                      Read and inspect a CSV data set.</span></span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a><span class="co">#&gt; columns                                   Identify variables in a data frame.</span></span>
+<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a><span class="co">#&gt; missing                                   Check data quality before analysis.</span></span>
+<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a><span class="co">#&gt; plotwin                          Make a basic plot and read a visual pattern.</span></span>
+<span id="cb3-35"><a href="#cb3-35" tabindex="-1"></a><span class="co">#&gt; habitat        Use tables to summarize categorical variables before plotting.</span></span>
+<span id="cb3-36"><a href="#cb3-36" tabindex="-1"></a><span class="co">#&gt; hidden  Discover that plotted data can reveal structure hidden in plain text.</span></span>
+<span id="cb3-37"><a href="#cb3-37" tabindex="-1"></a><span class="co">#&gt; subset                           Subset data frames using logical conditions.</span></span>
+<span id="cb3-38"><a href="#cb3-38" tabindex="-1"></a><span class="co">#&gt; sorting                          Order data and inspect extreme observations.</span></span>
+<span id="cb3-39"><a href="#cb3-39" tabindex="-1"></a><span class="co">#&gt; model                                Fit and interpret a simple linear model.</span></span>
+<span id="cb3-40"><a href="#cb3-40" tabindex="-1"></a><span class="co">#&gt; resid                 Understand that fitted models leave residual variation.</span></span>
+<span id="cb3-41"><a href="#cb3-41" tabindex="-1"></a><span class="co">#&gt; predict           Use a fitted model to predict for a new ecological setting.</span></span>
+<span id="cb3-42"><a href="#cb3-42" tabindex="-1"></a><span class="co">#&gt; detectp            Connect observed data to an imperfect observation process.</span></span>
+<span id="cb3-43"><a href="#cb3-43" tabindex="-1"></a><span class="co">#&gt; detect                             Summarize detections as observed outcomes.</span></span>
+<span id="cb3-44"><a href="#cb3-44" tabindex="-1"></a><span class="co">#&gt; trunc                 Think about distance cutoffs and retained observations.</span></span>
+<span id="cb3-45"><a href="#cb3-45" tabindex="-1"></a><span class="co">#&gt; comment                        Recognize comments as part of readable R code.</span></span>
+<span id="cb3-46"><a href="#cb3-46" tabindex="-1"></a><span class="co">#&gt; quarto       Recognize reproducible reports as part of the analysis workflow.</span></span>
+<span id="cb3-47"><a href="#cb3-47" tabindex="-1"></a><span class="co">#&gt; bpmean                        Create a numeric vector and calculate its mean.</span></span>
+<span id="cb3-48"><a href="#cb3-48" tabindex="-1"></a><span class="co">#&gt; posprop                                   Calculate a proportion from counts.</span></span>
+<span id="cb3-49"><a href="#cb3-49" tabindex="-1"></a><span class="co">#&gt; riskcat                         Use a logical comparison to classify a value.</span></span>
+<span id="cb3-50"><a href="#cb3-50" tabindex="-1"></a><span class="fu">list_escapes</span>()</span>
+<span id="cb3-51"><a href="#cb3-51" tabindex="-1"></a><span class="co">#&gt;              id pack_id                    rooms</span></span>
+<span id="cb3-52"><a href="#cb3-52" tabindex="-1"></a><span class="co">#&gt; medmini medmini medpack          bpmean, riskcat</span></span>
+<span id="cb3-53"><a href="#cb3-53" tabindex="-1"></a><span class="co">#&gt; medfull medfull medpack bpmean, riskcat, posprop</span></span>
+<span id="cb3-54"><a href="#cb3-54" tabindex="-1"></a></span>
+<span id="cb3-55"><a href="#cb3-55" tabindex="-1"></a>medicine_escape <span class="ot">&lt;-</span> <span class="fu">build_escape</span>(<span class="st">&quot;medfull&quot;</span>)</span>
+<span id="cb3-56"><a href="#cb3-56" tabindex="-1"></a>medicine_escape<span class="sc">$</span>room_ids</span>
+<span id="cb3-57"><a href="#cb3-57" tabindex="-1"></a><span class="co">#&gt; [1] &quot;bpmean&quot;  &quot;riskcat&quot; &quot;posprop&quot;</span></span></code></pre></div>
+<p>To play it interactively:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">start_escape</span>(<span class="at">player =</span> <span class="st">&quot;demo_medicine&quot;</span>, <span class="at">reset =</span> <span class="cn">TRUE</span>, <span class="at">escape =</span> medicine_escape)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co"># Room 1 answer</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="fu">submit</span>(<span class="dv">130</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co"># Room 2 answer</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="fu">submit</span>(<span class="st">&quot;high&quot;</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co"># Room 3 answer</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="fu">submit</span>(<span class="fl">0.2</span>)</span></code></pre></div>
+<p>When developing a pack, test wrong answers as well. Good failure
+messages help students recover without giving away the whole
+solution.</p>
+</div>
+<div id="step-5-use-a-custom-checker-when-needed" class="section level2">
+<h2>Step 5: use a custom checker when needed</h2>
+<p>Sometimes a room has several acceptable answers. For example, a
+social-science room might accept <code>&quot;increase&quot;</code>,
+<code>&quot;increased&quot;</code>, or <code>&quot;up&quot;</code>. In that case, provide a
+<code>checker</code> function instead of
+<code>correct_result</code>.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>trend <span class="ot">&lt;-</span> <span class="fu">new_room</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="at">id =</span> <span class="st">&quot;trend&quot;</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">module =</span> <span class="st">&quot;Social sciences&quot;</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">&quot;The Survey Trend&quot;</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">learning_goal =</span> <span class="st">&quot;Interpret a direction of change.&quot;</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">introduction =</span> <span class="st">&quot;A survey dashboard compares this year with last year.&quot;</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="at">challenge =</span> <span class="st">&quot;Satisfaction rose from 62 to 70 percent. Submit the direction of change.&quot;</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="at">hints =</span> <span class="fu">c</span>(</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>    <span class="st">&quot;Compare the second value with the first.&quot;</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>    <span class="st">&quot;Several words can describe an upward change.&quot;</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  ),</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  <span class="at">checker =</span> <span class="cf">function</span>(answer) {</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>    <span class="fu">tolower</span>(<span class="fu">trimws</span>(<span class="fu">as.character</span>(answer))) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;increase&quot;</span>, <span class="st">&quot;increased&quot;</span>, <span class="st">&quot;up&quot;</span>, <span class="st">&quot;rose&quot;</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>  },</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>  <span class="at">success =</span> <span class="st">&quot;The dashboard accepts the trend.&quot;</span>,</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  <span class="at">failure =</span> <span class="st">&quot;Try describing whether the second value is higher or lower than the first.&quot;</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>)</span></code></pre></div>
+<p>Custom checkers should be short and predictable. They must return
+<code>TRUE</code> only when the answer should unlock the room.</p>
+</div>
+<div id="step-6-prepare-a-github-contribution" class="section level2">
+<h2>Step 6: prepare a GitHub contribution</h2>
+<p>To submit rooms for integration into <code>escapeR</code>, place the
+room pack in a single R file. A good file name uses the pack theme, for
+example:</p>
+<pre class="text"><code>R/room_pack_medicine.R
+R/room_pack_agriculture.R
+R/room_pack_social.R</code></pre>
+<p>The file should define one function that returns the pack. For the
+medicine example, the submitted file would look like this:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>medicine_room_pack <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  bpmean <span class="ot">&lt;-</span> <span class="fu">new_room</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>    <span class="at">id =</span> <span class="st">&quot;bpmean&quot;</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>    <span class="at">module =</span> <span class="st">&quot;Medicine&quot;</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;The Clinic Intake&quot;</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>    <span class="at">learning_goal =</span> <span class="st">&quot;Create a numeric vector and calculate its mean.&quot;</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>    <span class="at">introduction =</span> <span class="fu">paste</span>(</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>      <span class="st">&quot;A clinic intake sheet lists systolic blood pressure readings for&quot;</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>      <span class="st">&quot;three patients seen before lunch.&quot;</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>    ),</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>    <span class="at">challenge =</span> <span class="fu">paste</span>(</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>      <span class="st">&quot;Create a vector with the values 120, 130, and 140.&quot;</span>,</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>      <span class="st">&quot;What is the average systolic blood pressure? Submit the mean.&quot;</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>    ),</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>    <span class="at">hints =</span> <span class="fu">c</span>(</span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>      <span class="st">&quot;Use c() to combine the three readings into one vector.&quot;</span>,</span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>      <span class="st">&quot;Use mean() to calculate the average of a numeric vector.&quot;</span></span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>    ),</span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>    <span class="at">correct_result =</span> <span class="dv">130</span>,</span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>    <span class="at">success =</span> <span class="st">&quot;The intake sheet is complete, and the first cabinet opens.&quot;</span>,</span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>    <span class="at">failure =</span> <span class="st">&quot;Not quite. Check that all three readings are included before taking the mean.&quot;</span></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a>  )</span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a></span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a>  riskcat <span class="ot">&lt;-</span> <span class="fu">new_room</span>(</span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a>    <span class="at">id =</span> <span class="st">&quot;riskcat&quot;</span>,</span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a>    <span class="at">module =</span> <span class="st">&quot;Medicine&quot;</span>,</span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;The Risk Label&quot;</span>,</span>
+<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a>    <span class="at">learning_goal =</span> <span class="st">&quot;Use a logical comparison to classify a value.&quot;</span>,</span>
+<span id="cb7-29"><a href="#cb7-29" tabindex="-1"></a>    <span class="at">introduction =</span> <span class="st">&quot;A label printer waits beside the triage desk.&quot;</span>,</span>
+<span id="cb7-30"><a href="#cb7-30" tabindex="-1"></a>    <span class="at">challenge =</span> <span class="fu">paste</span>(</span>
+<span id="cb7-31"><a href="#cb7-31" tabindex="-1"></a>      <span class="st">&quot;A systolic blood pressure of 145 is considered high if it is above 140.&quot;</span>,</span>
+<span id="cb7-32"><a href="#cb7-32" tabindex="-1"></a>      <span class="st">&quot;Submit high or normal.&quot;</span></span>
+<span id="cb7-33"><a href="#cb7-33" tabindex="-1"></a>    ),</span>
+<span id="cb7-34"><a href="#cb7-34" tabindex="-1"></a>    <span class="at">hints =</span> <span class="fu">c</span>(</span>
+<span id="cb7-35"><a href="#cb7-35" tabindex="-1"></a>      <span class="st">&quot;Ask R whether 145 &gt; 140.&quot;</span>,</span>
+<span id="cb7-36"><a href="#cb7-36" tabindex="-1"></a>      <span class="st">&quot;If the comparison is TRUE, the category requested by the room is high.&quot;</span></span>
+<span id="cb7-37"><a href="#cb7-37" tabindex="-1"></a>    ),</span>
+<span id="cb7-38"><a href="#cb7-38" tabindex="-1"></a>    <span class="at">correct_result =</span> <span class="st">&quot;high&quot;</span>,</span>
+<span id="cb7-39"><a href="#cb7-39" tabindex="-1"></a>    <span class="at">success =</span> <span class="st">&quot;The label prints clearly, and the triage desk unlocks.&quot;</span></span>
+<span id="cb7-40"><a href="#cb7-40" tabindex="-1"></a>  )</span>
+<span id="cb7-41"><a href="#cb7-41" tabindex="-1"></a></span>
+<span id="cb7-42"><a href="#cb7-42" tabindex="-1"></a>  posprop <span class="ot">&lt;-</span> <span class="fu">new_room</span>(</span>
+<span id="cb7-43"><a href="#cb7-43" tabindex="-1"></a>    <span class="at">id =</span> <span class="st">&quot;posprop&quot;</span>,</span>
+<span id="cb7-44"><a href="#cb7-44" tabindex="-1"></a>    <span class="at">module =</span> <span class="st">&quot;Medicine&quot;</span>,</span>
+<span id="cb7-45"><a href="#cb7-45" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;The Test Result Board&quot;</span>,</span>
+<span id="cb7-46"><a href="#cb7-46" tabindex="-1"></a>    <span class="at">learning_goal =</span> <span class="st">&quot;Calculate a proportion from counts.&quot;</span>,</span>
+<span id="cb7-47"><a href="#cb7-47" tabindex="-1"></a>    <span class="at">introduction =</span> <span class="fu">paste</span>(</span>
+<span id="cb7-48"><a href="#cb7-48" tabindex="-1"></a>      <span class="st">&quot;A result board shows 8 positive tests out of 40 tests performed.&quot;</span>,</span>
+<span id="cb7-49"><a href="#cb7-49" tabindex="-1"></a>      <span class="st">&quot;The ward door asks for the positive proportion.&quot;</span></span>
+<span id="cb7-50"><a href="#cb7-50" tabindex="-1"></a>    ),</span>
+<span id="cb7-51"><a href="#cb7-51" tabindex="-1"></a>    <span class="at">challenge =</span> <span class="st">&quot;Submit the proportion of tests that were positive.&quot;</span>,</span>
+<span id="cb7-52"><a href="#cb7-52" tabindex="-1"></a>    <span class="at">hints =</span> <span class="fu">c</span>(</span>
+<span id="cb7-53"><a href="#cb7-53" tabindex="-1"></a>      <span class="st">&quot;A proportion is part divided by whole.&quot;</span>,</span>
+<span id="cb7-54"><a href="#cb7-54" tabindex="-1"></a>      <span class="st">&quot;In R, calculate 8 / 40.&quot;</span></span>
+<span id="cb7-55"><a href="#cb7-55" tabindex="-1"></a>    ),</span>
+<span id="cb7-56"><a href="#cb7-56" tabindex="-1"></a>    <span class="at">correct_result =</span> <span class="fl">0.2</span>,</span>
+<span id="cb7-57"><a href="#cb7-57" tabindex="-1"></a>    <span class="at">success =</span> <span class="st">&quot;The board accepts the proportion, and the ward door opens.&quot;</span></span>
+<span id="cb7-58"><a href="#cb7-58" tabindex="-1"></a>  )</span>
+<span id="cb7-59"><a href="#cb7-59" tabindex="-1"></a></span>
+<span id="cb7-60"><a href="#cb7-60" tabindex="-1"></a>  <span class="fu">new_room_pack</span>(</span>
+<span id="cb7-61"><a href="#cb7-61" tabindex="-1"></a>    <span class="at">id =</span> <span class="st">&quot;medpack&quot;</span>,</span>
+<span id="cb7-62"><a href="#cb7-62" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Introductory medicine rooms&quot;</span>,</span>
+<span id="cb7-63"><a href="#cb7-63" tabindex="-1"></a>    <span class="at">description =</span> <span class="fu">paste</span>(</span>
+<span id="cb7-64"><a href="#cb7-64" tabindex="-1"></a>      <span class="st">&quot;A small set of medicine-themed rooms for practising vectors,&quot;</span>,</span>
+<span id="cb7-65"><a href="#cb7-65" tabindex="-1"></a>      <span class="st">&quot;means, comparisons, and proportions.&quot;</span></span>
+<span id="cb7-66"><a href="#cb7-66" tabindex="-1"></a>    ),</span>
+<span id="cb7-67"><a href="#cb7-67" tabindex="-1"></a>    <span class="at">rooms =</span> <span class="fu">list</span>(bpmean, riskcat, posprop),</span>
+<span id="cb7-68"><a href="#cb7-68" tabindex="-1"></a>    <span class="at">escapes =</span> <span class="fu">list</span>(</span>
+<span id="cb7-69"><a href="#cb7-69" tabindex="-1"></a>      <span class="at">medmini =</span> <span class="fu">c</span>(<span class="st">&quot;bpmean&quot;</span>, <span class="st">&quot;riskcat&quot;</span>),</span>
+<span id="cb7-70"><a href="#cb7-70" tabindex="-1"></a>      <span class="at">medfull =</span> <span class="fu">c</span>(<span class="st">&quot;bpmean&quot;</span>, <span class="st">&quot;riskcat&quot;</span>, <span class="st">&quot;posprop&quot;</span>)</span>
+<span id="cb7-71"><a href="#cb7-71" tabindex="-1"></a>    )</span>
+<span id="cb7-72"><a href="#cb7-72" tabindex="-1"></a>  )</span>
+<span id="cb7-73"><a href="#cb7-73" tabindex="-1"></a>}</span></code></pre></div>
+<p>Then add a small test file, for example
+<code>tests/testthat/test-room-pack-medicine.R</code>:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;medicine room pack can be registered and played&quot;</span>, {</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  pack <span class="ot">&lt;-</span> <span class="fu">medicine_room_pack</span>()</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="fu">register_room_pack</span>(pack, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="fu">expect_true</span>(<span class="fu">all</span>(<span class="fu">c</span>(<span class="st">&quot;bpmean&quot;</span>, <span class="st">&quot;riskcat&quot;</span>, <span class="st">&quot;posprop&quot;</span>) <span class="sc">%in%</span> <span class="fu">list_rooms</span>()<span class="sc">$</span>id))</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">build_escape</span>(<span class="st">&quot;medfull&quot;</span>)<span class="sc">$</span>room_ids, <span class="fu">c</span>(<span class="st">&quot;bpmean&quot;</span>, <span class="st">&quot;riskcat&quot;</span>, <span class="st">&quot;posprop&quot;</span>))</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>  <span class="fu">expect_true</span>(pack<span class="sc">$</span>rooms[[<span class="dv">1</span>]]<span class="sc">$</span><span class="fu">checker</span>(<span class="dv">130</span>))</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>  <span class="fu">expect_true</span>(pack<span class="sc">$</span>rooms[[<span class="dv">2</span>]]<span class="sc">$</span><span class="fu">checker</span>(<span class="st">&quot;high&quot;</span>))</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>  <span class="fu">expect_true</span>(pack<span class="sc">$</span>rooms[[<span class="dv">3</span>]]<span class="sc">$</span><span class="fu">checker</span>(<span class="fl">0.2</span>))</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>})</span></code></pre></div>
+<p>In a pull request, include:</p>
+<ol style="list-style-type: decimal">
+<li>The room-pack file.</li>
+<li>A short test file.</li>
+<li>Any small data files, if needed, under
+<code>inst/extdata/</code>.</li>
+<li>A short README or vignette paragraph if the pack introduces a new
+teaching theme.</li>
+</ol>
+<p>If the pull request is accepted, the pack can be integrated into the
+package by keeping the submitted room-pack function and registering the
+pack from package code or examples. The room IDs and escape sequence IDs
+then become available to other users through <code>list_rooms()</code>,
+<code>list_escapes()</code>, and <code>build_escape()</code>.</p>
+</div>
+<div id="design-advice" class="section level2">
+<h2>Design advice</h2>
+<p>Write rooms for learners, not for answer keys. A useful room
+should:</p>
+<ul>
+<li>practise one main R idea;</li>
+<li>use a theme-specific story but keep the statistical task clear;</li>
+<li>hide solution mechanics in hints rather than the challenge
+text;</li>
+<li>include two or three progressive hints;</li>
+<li>have a precise expected result or a very simple checker;</li>
+<li>give a supportive failure message when the likely mistake is
+predictable;</li>
+<li>use short stable IDs that will not clash with other packs.</li>
+</ul>
+<p>The ecology rooms bundled with <code>escapeR</code> are one theme.
+The same architecture can support medicine, agriculture, social
+sciences, and many other domains, as long as each room remains a small,
+testable R learning step.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

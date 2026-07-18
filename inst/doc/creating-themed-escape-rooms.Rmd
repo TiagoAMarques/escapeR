@@ -1,0 +1,360 @@
+---
+title: "Creating themed escape rooms with escapeR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Creating themed escape rooms with escapeR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+`escapeR` was first created inside an Ecological Statistics course. The bundled
+rooms therefore use ecological examples: field counts, survey data, detection,
+modelling, and reproducible reporting. The package architecture is more general
+than that, however. An escape room is just a sequence of small tasks where
+students use R to unlock the next step.
+
+This vignette explains how to create rooms in any theme, such as medicine,
+agriculture, social sciences, economics, psychology, or environmental policy. It
+also shows how to bundle those rooms into a shareable room pack that can be
+submitted to the `escapeR` GitHub repository.
+
+## The room architecture
+
+Every room is built from separate components:
+
+- `id`: a short unique identifier, at most 8 characters, such as `"bpmean"` or
+  `"yield"`.
+- `module`: the broad teaching module, such as `"Medicine"` or
+  `"Agriculture"`.
+- `title`: the room title shown to students.
+- `learning_goal`: what the student should practise.
+- `introduction`: the story or setting.
+- `challenge`: the task the student must solve.
+- `hints`: one or more hints. Repeated calls to `hint()` reveal them in order.
+- `correct_result`: the expected answer for simple numeric or text answers.
+- `checker`: an optional custom function for more complex answer checking.
+- `success`: the message shown after a correct answer.
+- `failure`: an optional message shown after a wrong answer.
+
+Most beginner rooms only need `correct_result`. For example, if the correct
+answer is `130`, `escapeR` checks numeric submissions with a small tolerance. If
+the correct answer is `"high"`, `escapeR` checks text after trimming spaces and
+ignoring case. Use `checker` when you need more control.
+
+## Step 1: choose a theme
+
+Start with a familiar domain and a small learning goal. Good first rooms are
+short, concrete, and assess one idea at a time.
+
+Examples:
+
+- Medicine: calculate an average blood pressure, count high-risk patients, or
+  interpret a positive/negative test result.
+- Agriculture: calculate mean crop yield, compare fertilizer treatments, or
+  count plots affected by drought.
+- Social sciences: calculate average survey satisfaction, tabulate responses,
+  or classify whether an unemployment rate increased.
+
+For a first contribution, aim for two or three rooms. That is enough to create a
+small story arc while keeping the pull request easy to review.
+
+## Step 2: create individual rooms
+
+The example below creates a tiny medicine-themed escape room. The first room
+asks students to create a vector and calculate a mean. The second asks them to
+use a logical comparison and submit a category. The third asks for a simple
+proportion.
+
+```{r}
+library(escapeR)
+
+bpmean <- new_room(
+  id = "bpmean",
+  module = "Medicine",
+  title = "The Clinic Intake",
+  learning_goal = "Create a numeric vector and calculate its mean.",
+  introduction = paste(
+    "A clinic intake sheet lists systolic blood pressure readings for",
+    "three patients seen before lunch."
+  ),
+  challenge = paste(
+    "Create a vector with the values 120, 130, and 140.",
+    "What is the average systolic blood pressure? Submit the mean."
+  ),
+  hints = c(
+    "Use c() to combine the three readings into one vector.",
+    "Use mean() to calculate the average of a numeric vector."
+  ),
+  correct_result = 130,
+  success = "The intake sheet is complete, and the first cabinet opens.",
+  failure = "Not quite. Check that all three readings are included before taking the mean."
+)
+
+riskcat <- new_room(
+  id = "riskcat",
+  module = "Medicine",
+  title = "The Risk Label",
+  learning_goal = "Use a logical comparison to classify a value.",
+  introduction = paste(
+    "A label printer waits beside the triage desk.",
+    "It needs the correct risk category for the next patient."
+  ),
+  challenge = paste(
+    "A systolic blood pressure of 145 is considered high if it is above 140.",
+    "Submit high or normal."
+  ),
+  hints = c(
+    "Ask R whether 145 > 140.",
+    "If the comparison is TRUE, the category requested by the room is high."
+  ),
+  correct_result = "high",
+  success = "The label prints clearly, and the triage desk unlocks."
+)
+
+posprop <- new_room(
+  id = "posprop",
+  module = "Medicine",
+  title = "The Test Result Board",
+  learning_goal = "Calculate a proportion from counts.",
+  introduction = paste(
+    "A result board shows 8 positive tests out of 40 tests performed.",
+    "The ward door asks for the positive proportion."
+  ),
+  challenge = "Submit the proportion of tests that were positive.",
+  hints = c(
+    "A proportion is part divided by whole.",
+    "In R, calculate 8 / 40."
+  ),
+  correct_result = 0.2,
+  success = "The board accepts the proportion, and the ward door opens."
+)
+```
+
+Notice that each room is self-contained. The student sees the introduction and
+challenge, but the correct result and hints are stored separately. This makes
+rooms easier to review, edit, translate, and reuse.
+
+## Step 3: bundle rooms into a pack
+
+A room pack is the unit that is easiest to share. It contains a pack ID, a short
+description, the rooms, and one or more named escape sequences. A sequence is
+just an ordered vector of room IDs.
+
+```{r}
+medicine_pack <- new_room_pack(
+  id = "medpack",
+  title = "Introductory medicine rooms",
+  description = paste(
+    "A small set of medicine-themed rooms for practising vectors,",
+    "means, comparisons, and proportions."
+  ),
+  rooms = list(bpmean, riskcat, posprop),
+  escapes = list(
+    medmini = c("bpmean", "riskcat"),
+    medfull = c("bpmean", "riskcat", "posprop")
+  )
+)
+```
+
+The pack can contain more than one escape sequence. In this example, `medmini`
+is a two-room activity and `medfull` uses all three rooms.
+
+## Step 4: test locally
+
+Register the pack in your R session, inspect the rooms and escape sequences, and
+then start a test game.
+
+```{r}
+register_room_pack(medicine_pack, replace = TRUE)
+
+list_rooms()
+list_escapes()
+
+medicine_escape <- build_escape("medfull")
+medicine_escape$room_ids
+```
+
+To play it interactively:
+
+```{r, eval = FALSE}
+start_escape(player = "demo_medicine", reset = TRUE, escape = medicine_escape)
+
+# Room 1 answer
+submit(130)
+
+# Room 2 answer
+submit("high")
+
+# Room 3 answer
+submit(0.2)
+```
+
+When developing a pack, test wrong answers as well. Good failure messages help
+students recover without giving away the whole solution.
+
+## Step 5: use a custom checker when needed
+
+Sometimes a room has several acceptable answers. For example, a social-science
+room might accept `"increase"`, `"increased"`, or `"up"`. In that case, provide a
+`checker` function instead of `correct_result`.
+
+```{r}
+trend <- new_room(
+  id = "trend",
+  module = "Social sciences",
+  title = "The Survey Trend",
+  learning_goal = "Interpret a direction of change.",
+  introduction = "A survey dashboard compares this year with last year.",
+  challenge = "Satisfaction rose from 62 to 70 percent. Submit the direction of change.",
+  hints = c(
+    "Compare the second value with the first.",
+    "Several words can describe an upward change."
+  ),
+  checker = function(answer) {
+    tolower(trimws(as.character(answer))) %in% c("increase", "increased", "up", "rose")
+  },
+  success = "The dashboard accepts the trend.",
+  failure = "Try describing whether the second value is higher or lower than the first."
+)
+```
+
+Custom checkers should be short and predictable. They must return `TRUE` only
+when the answer should unlock the room.
+
+## Step 6: prepare a GitHub contribution
+
+To submit rooms for integration into `escapeR`, place the room pack in a single
+R file. A good file name uses the pack theme, for example:
+
+```text
+R/room_pack_medicine.R
+R/room_pack_agriculture.R
+R/room_pack_social.R
+```
+
+The file should define one function that returns the pack. For the medicine
+example, the submitted file would look like this:
+
+```{r, eval = FALSE}
+medicine_room_pack <- function() {
+  bpmean <- new_room(
+    id = "bpmean",
+    module = "Medicine",
+    title = "The Clinic Intake",
+    learning_goal = "Create a numeric vector and calculate its mean.",
+    introduction = paste(
+      "A clinic intake sheet lists systolic blood pressure readings for",
+      "three patients seen before lunch."
+    ),
+    challenge = paste(
+      "Create a vector with the values 120, 130, and 140.",
+      "What is the average systolic blood pressure? Submit the mean."
+    ),
+    hints = c(
+      "Use c() to combine the three readings into one vector.",
+      "Use mean() to calculate the average of a numeric vector."
+    ),
+    correct_result = 130,
+    success = "The intake sheet is complete, and the first cabinet opens.",
+    failure = "Not quite. Check that all three readings are included before taking the mean."
+  )
+
+  riskcat <- new_room(
+    id = "riskcat",
+    module = "Medicine",
+    title = "The Risk Label",
+    learning_goal = "Use a logical comparison to classify a value.",
+    introduction = "A label printer waits beside the triage desk.",
+    challenge = paste(
+      "A systolic blood pressure of 145 is considered high if it is above 140.",
+      "Submit high or normal."
+    ),
+    hints = c(
+      "Ask R whether 145 > 140.",
+      "If the comparison is TRUE, the category requested by the room is high."
+    ),
+    correct_result = "high",
+    success = "The label prints clearly, and the triage desk unlocks."
+  )
+
+  posprop <- new_room(
+    id = "posprop",
+    module = "Medicine",
+    title = "The Test Result Board",
+    learning_goal = "Calculate a proportion from counts.",
+    introduction = paste(
+      "A result board shows 8 positive tests out of 40 tests performed.",
+      "The ward door asks for the positive proportion."
+    ),
+    challenge = "Submit the proportion of tests that were positive.",
+    hints = c(
+      "A proportion is part divided by whole.",
+      "In R, calculate 8 / 40."
+    ),
+    correct_result = 0.2,
+    success = "The board accepts the proportion, and the ward door opens."
+  )
+
+  new_room_pack(
+    id = "medpack",
+    title = "Introductory medicine rooms",
+    description = paste(
+      "A small set of medicine-themed rooms for practising vectors,",
+      "means, comparisons, and proportions."
+    ),
+    rooms = list(bpmean, riskcat, posprop),
+    escapes = list(
+      medmini = c("bpmean", "riskcat"),
+      medfull = c("bpmean", "riskcat", "posprop")
+    )
+  )
+}
+```
+
+Then add a small test file, for example `tests/testthat/test-room-pack-medicine.R`:
+
+```{r, eval = FALSE}
+test_that("medicine room pack can be registered and played", {
+  pack <- medicine_room_pack()
+  register_room_pack(pack, replace = TRUE)
+
+  expect_true(all(c("bpmean", "riskcat", "posprop") %in% list_rooms()$id))
+  expect_equal(build_escape("medfull")$room_ids, c("bpmean", "riskcat", "posprop"))
+  expect_true(pack$rooms[[1]]$checker(130))
+  expect_true(pack$rooms[[2]]$checker("high"))
+  expect_true(pack$rooms[[3]]$checker(0.2))
+})
+```
+
+In a pull request, include:
+
+1. The room-pack file.
+2. A short test file.
+3. Any small data files, if needed, under `inst/extdata/`.
+4. A short README or vignette paragraph if the pack introduces a new teaching
+   theme.
+
+If the pull request is accepted, the pack can be integrated into the package by
+keeping the submitted room-pack function and registering the pack from package
+code or examples. The room IDs and escape sequence IDs then become available to
+other users through `list_rooms()`, `list_escapes()`, and `build_escape()`.
+
+## Design advice
+
+Write rooms for learners, not for answer keys. A useful room should:
+
+- practise one main R idea;
+- use a theme-specific story but keep the statistical task clear;
+- hide solution mechanics in hints rather than the challenge text;
+- include two or three progressive hints;
+- have a precise expected result or a very simple checker;
+- give a supportive failure message when the likely mistake is predictable;
+- use short stable IDs that will not clash with other packs.
+
+The ecology rooms bundled with `escapeR` are one theme. The same architecture can
+support medicine, agriculture, social sciences, and many other domains, as long
+as each room remains a small, testable R learning step.
