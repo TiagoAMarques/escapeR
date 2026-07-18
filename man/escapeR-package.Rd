@@ -8,4 +8,6 @@ A lightweight classroom game where students learn R by solving ecological-statis
 }
 \details{
 Call \code{start_escape()} in an interactive R session, solve each room with ordinary R commands, and use \code{submit()} to unlock the next task.
+
+To learn how to create themed rooms or contributor room packs, see the vignette with \code{vignette("creating-themed-escape-rooms", package = "escapeR")}.
 }

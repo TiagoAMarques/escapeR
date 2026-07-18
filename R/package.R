@@ -2,6 +2,9 @@
 #'
 #' Load the package in an interactive R session to enter the room, or call
 #' [start_escape()] explicitly.
+#'
+#' To learn how to create themed rooms or contributor room packs, see the
+#' vignette with `vignette("creating-themed-escape-rooms", package = "escapeR")`.
 "_PACKAGE"
 
 .onAttach <- function(libname, pkgname) {
