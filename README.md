@@ -8,9 +8,12 @@ Quarto workflows.
 
 ![The escapeR Educational Experience](The_escapeR_Educational_Experience.png)
 
-Please do not get your expectations too high. This is currently a pet project that started as a great way to procrastinate while preparing my habilitation process. The image above reflects a vision, the reality might not live to the expectation, yet. 
+Please do not get your expectations too high. This is currently a pet project
+that started as a great way to procrastinate while preparing my habilitation
+process. The image above reflects a vision; the reality might not live up to the
+expectation yet.
 
-![The escapeR Educational Experience](escapeR_Expectation_vs_Reality.png)
+![The escapeR Expectation vs Reality](escapeR_Expectation_vs_Reality.png)
 
 The first version is inspired by:
 
@@ -21,7 +24,8 @@ The first version is inspired by:
 - The Distance Sampling lesson, especially detection, distance, abundance,
   observation filters, and assumptions.
 
-  If you have suggestions for rooms, please reach out. I would be happy to have co-authors on this package :) 
+If you have suggestions for rooms, please reach out. I would be happy to have
+co-authors on this package :)
 
 ## Install from GitHub
 
@@ -69,6 +73,36 @@ The current game has 19 rooms arranged across seven course modules:
 7. Reproducible workflow: comments and Quarto source files.
 
 Use `list_rooms()` to see every room, module, and learning goal.
+
+## Custom room sequences
+
+Rooms are modular objects with a short ID, introduction text, challenge text,
+sequential hints, an answer checker, success text, and optional failure text.
+Instructors can compose a shorter or themed escape from room IDs:
+
+```r
+river_escape <- build_escape(c("console", "vector", "plotwin"))
+start_escape(player = "student1", reset = TRUE, escape = river_escape)
+```
+
+Contributors can also create and register add-on rooms:
+
+```r
+parasite_room <- new_room(
+  id = "paras",
+  module = "R foundations",
+  title = "The Parasite Count",
+  learning_goal = "Create vectors and summarize them.",
+  introduction = "A sample tray holds river fish records.",
+  challenge = "Submit the mean parasite count.",
+  hints = c("Store the counts in a vector first.", "mean() calculates the average."),
+  correct_result = 15,
+  success = "The tray label clicks into place."
+)
+
+register_rooms(parasite_room)
+build_escape(c("console", "paras"))
+```
 
 Wrong answers now return a short encouraging message that points students back
 to the habits that make R and statistics useful for ecologists: checking object
