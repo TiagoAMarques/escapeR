@@ -13,15 +13,18 @@
   file.path(.progress_dir(), paste0(safe, ".rds"))
 }
 
-.new_progress <- function(player) {
+.new_progress <- function(player, escape_ids = NULL) {
   list(
     player = player,
     room = 1L,
+    escape_ids = .escape_ids(escape_ids),
     started = Sys.time(),
     updated = Sys.time(),
     completed = FALSE,
+    hints = integer(),
     history = data.frame(
       room = integer(),
+      id = character(),
       title = character(),
       solved_at = as.POSIXct(character()),
       stringsAsFactors = FALSE
@@ -32,7 +35,14 @@
 .load_progress <- function(player) {
   file <- .progress_file(player)
   if (file.exists(file)) {
-    readRDS(file)
+    progress <- readRDS(file)
+    if (is.null(progress$escape_ids)) {
+      progress$escape_ids <- .builtin_room_ids()
+    }
+    if (is.null(progress$hints)) {
+      progress$hints <- integer()
+    }
+    progress
   } else {
     .new_progress(player)
   }
