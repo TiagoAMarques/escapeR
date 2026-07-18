@@ -6,14 +6,14 @@ objects, CSV files, data inspection, plots, subsetting, simple models,
 predictions, observation processes, distance-sampling ideas, and reproducible
 Quarto workflows.
 
-![The escapeR Educational Experience](The_escapeR_Educational_Experience.png)
+![The escapeR Educational Experience](man/figures/The_escapeR_Educational_Experience.png)
 
 Please do not get your expectations too high. This is currently a pet project
 that started as a great way to procrastinate while preparing my habilitation
 process. The image above reflects a vision; the reality might not live up to the
 expectation yet.
 
-![The escapeR Expectation vs Reality](escapeR_Expectation_vs_Reality.png)
+![The escapeR Expectation vs Reality](man/figures/escapeR_Expectation_vs_Reality.png)
 
 The first version is inspired by:
 

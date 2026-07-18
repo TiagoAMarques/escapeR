@@ -11,12 +11,18 @@ start_escape <- function(player = NULL, reset = FALSE, escape = NULL) {
     if (!interactive()) {
       stop("Please provide player = in non-interactive sessions.", call. = FALSE)
     }
-    player <- readline("Who are you? ")
+    player <- readline("Player name: ")
   }
 
   player <- trimws(as.character(player)[1])
   if (!nzchar(player)) {
     stop("Player name cannot be empty.", call. = FALSE)
+  }
+  if (grepl("^(start_escape|escape)\\s*\\(", player)) {
+    stop(
+      "That looks like an R command, not a player name. Run start_escape() at the R prompt, then type only your name when asked.",
+      call. = FALSE
+    )
   }
 
   if (isTRUE(reset)) {
