@@ -128,6 +128,10 @@ test_that("plotting room uses survey_counts data", {
 test_that("hidden data room checks answer and custom failure message", {
   room <- escapeR:::.rooms()[[9]]
   expect_equal(room$title, "The Hidden Data")
+  expect_equal(length(room$hint), 4)
+  expect_match(room$hint[[2]], "read.table\\(\\)")
+  expect_match(room$hint[[3]], "header")
+  expect_match(room$hint[[4]], "\\?par")
   expect_true(room$checker(" information "))
   expect_false(room$checker("data"))
   expect_equal(

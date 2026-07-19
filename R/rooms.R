@@ -417,7 +417,12 @@ list_escapes <- function() {
       learning_goal = "Discover that plotted data can reveal structure hidden in plain text.",
       introduction = "A file sits on the bench, ordinary at first glance but quietly insistent.",
       challenge = "Data can sometimes contain more of something than what meets the eye at first. Can you find in the data hidden in escapeR_file('datahide.txt') what it is that data might contain hidden?",
-      hints = "You must plot the data in just the right way!",
+      hints = c(
+        "You must plot the data in just the right way!",
+        "To read a .txt, read.table() could be useful.",
+        "If there's a header in a file, you might need to tell it so explicitly to read.table().",
+        "You need good parameters to see the pattern. ?par shows all the graphical parameters you can use to customize a plot. Check them out. Therein lies the answer?"
+      ),
       correct_result = "information",
       failure = "That is not the information we are looking for; please try again!",
       success = "The plotted points settle into meaning. Some data keep their secrets until you ask visually."
