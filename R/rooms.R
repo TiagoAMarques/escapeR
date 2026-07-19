@@ -477,7 +477,7 @@ list_escapes <- function() {
       title = "The Prediction Lantern",
       learning_goal = "Use a fitted model to predict for a new ecological setting.",
       introduction = "A lantern asks what the model expects at a distance not written in the field notebook.",
-      challenge = "Fit lm(count ~ distance_m, data = survey_counts()). Predict count at distance_m = 50 and submit the value rounded to one decimal place.",
+      challenge = "Fitting a linear model of count as a function of distance_m with survey_counts(), predict count at distance_m = 50 and submit the value rounded to one decimal place.",
       hints = "predict() needs a data frame with a column named exactly like the model predictor.",
       checker = function(answer) .num_equal(answer, 13.9, tolerance = 1e-8),
       success = "The lantern glows. Prediction is interpolation with assumptions attached."
