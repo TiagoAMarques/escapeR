@@ -220,7 +220,7 @@ register_room_pack <- function(pack, replace = FALSE) {
 
 .builtin_room_ids <- function() {
   c(
-    "console", "vector", "naming", "datatab", "columns", "missing",
+    "console", "vector", "finddata", "datatab", "columns", "missing",
     "plotwin", "habitat", "hidden", "subset", "sorting", "model",
     "resid", "predict", "detectp", "detect", "trunc", "comment",
     "quarto"
@@ -342,15 +342,18 @@ list_escapes <- function() {
       success = "The notebooks open, and the first survey numbers are yours."
     ),
     .room(
-      id = "naming",
-      module = "R foundations",
-      title = "The Naming Shelf",
-      learning_goal = "Store values in objects and inspect them later.",
-      introduction = "A shelf of labelled jars refuses to move until one jar has the right label.",
-      challenge = "Store c(3, 1, 4, 1, 5) in an object named pi_digits. Submit the third value in that object.",
-      hints = "Square brackets extract positions from a vector, as in object_name[position].",
-      correct_result = 4,
-      success = "The shelf slides away. Named objects make R remember things so you do not have to."
+      id = "finddata",
+      module = "Data import and inspection",
+      title = "Finding Data",
+      learning_goal = "Find and inspect built-in R datasets.",
+      introduction = "A catalogue of built-in data sets waits on a reading desk.",
+      challenge = "In the package Datasets there's a dataset that reminds one of candy. It has 84 rows. What is the result of the division of the height of seed 331 at age 10 divided by the height of that seed at age 5. Based on that information, how much did that plant grow per year during that period, rounded to two decimal places?",
+      hints = c(
+        "You can inspect a dataset by using library(help = \"datasets\")",
+        "lolly is a candy :) "
+      ),
+      correct_result = 3.36,
+      success = "The catalogue opens. Finding data is often the first real step of analysis."
     ),
     .room(
       id = "datatab",

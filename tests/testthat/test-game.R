@@ -29,6 +29,17 @@ test_that("vector room has sequential hints and updated answer", {
   expect_false(room$checker(7.5))
 })
 
+test_that("finding data room uses the Loblolly growth answer", {
+  room <- escapeR:::.rooms()[[3]]
+  expect_equal(room$id, "finddata")
+  expect_equal(room$title, "Finding Data")
+  expect_equal(length(room$hint), 2)
+  expect_match(room$hint[[1]], "library\\(help = \"datasets\"\\)", fixed = FALSE)
+  expect_equal(room$hint[[2]], "lolly is a candy :) ")
+  expect_true(room$checker(3.36))
+  expect_false(room$checker(2.86))
+})
+
 test_that("custom rooms can be registered and composed", {
   addon <- new_room(
     id = "addon1",
