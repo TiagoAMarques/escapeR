@@ -12,6 +12,9 @@ to the next room.
 
 ![The escapeR Educational Experience](man/figures/The_escapeR_Educational_Experience.png)
 
+The above image represents a vision. The more accurate vision vs reality meme is
+at the bottom of this README file.
+
 ## Enter the Room
 
 Install the package from GitHub:
