@@ -112,12 +112,41 @@ submit <- function(answer) {
   .state$progress <- .save_progress(progress)
 
   if (isTRUE(progress$completed)) {
-    message("Congratulations, ", progress$player, ". You escaped the ecological statistics room.")
+    .final_challenge(progress$player)
   } else {
     play()
   }
 
   invisible(TRUE)
+}
+
+.final_challenge <- function(player, choice = NULL) {
+  message(
+    "Congratulations, ", player,
+    ". You escaped the Ecological Statistics escape room. All that with the power of R. A final never ending challenge remains. Are you up for it?"
+  )
+
+  options <- c("Yes", "No", "Maybe")
+  if (is.null(choice)) {
+    if (!interactive()) {
+      choice <- "Maybe"
+    } else {
+      selection <- utils::menu(options, title = "Are you up for it?")
+      choice <- if (selection %in% seq_along(options)) {
+        options[[selection]]
+      } else {
+        "Maybe"
+      }
+    }
+  }
+
+  if (identical(.answer_text(choice), "no")) {
+    message("Fair enough. A bit lazy, but you R tired, and you deserve a break. Maybe later ;)")
+  } else {
+    message("The challenge: can you create new rooms that are suitable to make the escape harder? Check out the vignette that shows you how you can do it!")
+  }
+
+  invisible(choice)
 }
 
 #' Show a hint for the current room

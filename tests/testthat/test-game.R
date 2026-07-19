@@ -179,3 +179,35 @@ test_that("completed or custom saved games are not migrated", {
   expect_equal(escapeR:::.migrate_progress(completed)$escape_ids, c("comment", "quarto"))
   expect_equal(escapeR:::.migrate_progress(custom)$escape_ids, c("comment", "quarto"))
 })
+
+test_that("final challenge responds to player choice", {
+  expect_message(
+    expect_message(
+      escapeR:::.final_challenge("learner", choice = "Yes"),
+      "You escaped the Ecological Statistics escape room",
+      fixed = TRUE
+    ),
+    "The challenge: can you create new rooms",
+    fixed = TRUE
+  )
+
+  expect_message(
+    expect_message(
+      escapeR:::.final_challenge("learner", choice = "Maybe"),
+      "You escaped the Ecological Statistics escape room",
+      fixed = TRUE
+    ),
+    "The challenge: can you create new rooms",
+    fixed = TRUE
+  )
+
+  expect_message(
+    expect_message(
+      escapeR:::.final_challenge("learner", choice = "No"),
+      "You escaped the Ecological Statistics escape room",
+      fixed = TRUE
+    ),
+    "Fair enough. A bit lazy, but you R tired",
+    fixed = TRUE
+  )
+})
