@@ -1,97 +1,118 @@
 # escapeR
 
-`escapeR` is an R package prototype for a classroom escape-room game. Students
-learn R by solving small ecological-statistics puzzles: arithmetic, vectors,
-objects, CSV files, data inspection, plots, subsetting, simple models,
-predictions, observation processes, distance-sampling ideas, and reproducible
-Quarto workflows.
+You are locked inside an Ecological Statistics escape room.
+
+The doors open with R.
+
+`escapeR` is a classroom game where you learn and practise R by solving small
+ecological-statistics puzzles. Each room gives you a short story, a task, and a
+lock. You use ordinary R commands to inspect data, make plots, fit models, and
+think through ecological evidence. When you have the answer, submit it and move
+to the next room.
 
 ![The escapeR Educational Experience](man/figures/The_escapeR_Educational_Experience.png)
 
-Please do not get your expectations too high. This is currently a pet project
-that started as a great way to procrastinate while preparing my habilitation
-process. The image above reflects a vision; the reality might not live up to the
-expectation yet.
+## Enter the Room
 
-![The escapeR Expectation vs Reality](man/figures/escapeR_Expectation_vs_Reality.png)
-
-The first version is inspired by:
-
-- `TiagoAMarques/AnIntro2RTutorial`, especially the beginner-friendly path from
-  R as a calculator to data files, plots, commented code, and Quarto reports.
-- The Ecological Statistics course material, especially the idea that students
-  need to reason from noisy observations back to ecological processes.
-- The Distance Sampling lesson, especially detection, distance, abundance,
-  observation filters, and assumptions.
-
-If you have suggestions for rooms, please reach out. I would be happy to have
-co-authors on this package :)
-
-## Install from GitHub
-
-Once the package folder has been pushed to GitHub as
-`TiagoAMarques/escapeR`, students can install it directly from R:
+Install the package from GitHub:
 
 ```r
 install.packages("remotes")
 remotes::install_github("TiagoAMarques/escapeR")
 ```
 
-## Play
+Then begin:
 
 ```r
 library(escapeR)
 escape()
 ```
 
-Returning players can use the same name and continue from saved progress.
+`escape()` asks for your player name and starts the quest. If you come back
+later with the same name, your saved progress is loaded automatically.
 
-Useful commands:
+## How to Play
+
+Read the room. Solve the task in R. Submit the answer.
+
+```r
+submit(42)
+```
+
+If you need to see the current room again:
 
 ```r
 play()
+```
+
+If you need a nudge:
+
+```r
 hint()
-submit(42)
+```
+
+Some rooms have several hints. Repeated calls reveal them one at a time.
+
+To check where you are:
+
+```r
 status()
-list_rooms()
+```
+
+To start over:
+
+```r
 reset_game()
 ```
 
-Progress is saved with `tools::R_user_dir("escapeR", "data")`, so each student
-can resume later on the same machine.
+## The Quest
 
-For a fuller walkthrough, see:
+The current escape has 20 rooms across seven parts of an introductory
+Ecological Statistics journey:
+
+1. R foundations: arithmetic, vectors, and named objects.
+2. Data import and inspection: built-in data, CSV files, columns, and missing values.
+3. Visualisation: detection patterns, categorical summaries, and hidden structure in data.
+4. Data manipulation: subsetting and ordering data frames.
+5. Ecological modelling: linear models, residuals, and prediction.
+6. Distance sampling: observation processes, detections, and truncation.
+7. Reproducible workflow: comments, web data, GLMs, and Quarto source files.
+
+To see every room:
+
+```r
+list_rooms()
+```
+
+For a fuller walkthrough:
 
 ```r
 vignette("getting-started-with-escapeR", package = "escapeR")
 ```
 
-## Current room sequence
+## Useful Data
 
-The current game has 20 rooms arranged across seven course modules:
+Some rooms use data bundled with the package:
 
-1. R foundations: console arithmetic, vectors, and named objects.
-2. Data import and inspection: CSV import, column names, and missing values.
-3. Visualisation: detection plots, categorical summaries, and hidden structure in data.
-4. Data manipulation: subsetting and ordering data frames.
-5. Ecological modelling: model fitting, residuals, and prediction.
-6. Distance sampling: observation processes, detections, and truncation.
-7. Reproducible workflow: comments and Quarto source files.
+```r
+survey_counts()
+escapeR_file("dados1.csv")
+escapeR_file("datahide.txt")
+```
 
-Use `list_rooms()` to see every room, module, and learning goal.
+The game expects you to work with these just like normal R data: read them,
+inspect them, plot them, model them, and check your assumptions.
 
-## Custom room sequences
+## For Instructors
 
-Rooms are modular objects with a short ID, introduction text, challenge text,
-sequential hints, an answer checker, success text, and optional failure text.
-Instructors can compose a shorter or themed escape from room IDs:
+You can build shorter quests from selected rooms:
 
 ```r
 river_escape <- build_escape(c("console", "vector", "plotwin"))
 escape(player = "student1", reset = TRUE, escape = river_escape)
 ```
 
-Contributors can also create and register add-on rooms:
+You can also create and register your own rooms:
 
 ```r
 parasite_room <- new_room(
@@ -110,19 +131,24 @@ register_rooms(parasite_room)
 build_escape(c("console", "paras"))
 ```
 
-Wrong answers now return a short encouraging message that points students back
-to the habits that make R and statistics useful for ecologists: checking object
-names, inspecting data structure, iterating carefully, and treating models as
-tools for thinking rather than magic doors.
+To learn how to create themed rooms and room packs:
 
-## Instructor notes
+```r
+vignette("creating-themed-escape-rooms", package = "escapeR")
+```
 
-This is intentionally small and dependency-light. It can grow in several
-directions:
+## Project Notes
 
-- more rooms per course module;
-- Portuguese and English text modes;
-- instructor-authored room packs;
-- Shiny or learnr front ends;
-- classroom leaderboards;
-- automated export of student progress.
+`escapeR` started as a playful way to teach R in an Ecological Statistics
+context. It is inspired by introductory R teaching material, ecological
+modelling, and distance-sampling ideas.
+
+Wrong answers return encouraging messages that point students back to useful
+habits: checking object names, inspecting data structure, iterating carefully,
+and treating models as tools for thinking rather than magic doors.
+
+Future directions may include more rooms, Portuguese and English text modes,
+instructor-authored room packs, Shiny or learnr front ends, classroom
+leaderboards, and export of student progress.
+
+![The escapeR Expectation vs Reality](man/figures/escapeR_Expectation_vs_Reality.png)
