@@ -68,7 +68,7 @@ vignette("getting-started-with-escapeR", package = "escapeR")
 
 ## Current room sequence
 
-The current game has 19 rooms arranged across seven course modules:
+The current game has 20 rooms arranged across seven course modules:
 
 1. R foundations: console arithmetic, vectors, and named objects.
 2. Data import and inspection: CSV import, column names, and missing values.

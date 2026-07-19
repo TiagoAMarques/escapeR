@@ -223,7 +223,7 @@ register_room_pack <- function(pack, replace = FALSE) {
     "console", "vector", "finddata", "datatab", "columns", "missing",
     "plotwin", "habitat", "hidden", "subset", "sorting", "model",
     "resid", "predict", "detectp", "detect", "trunc", "comment",
-    "quarto"
+    "webglm", "quarto"
   )
 }
 
@@ -525,6 +525,20 @@ list_escapes <- function() {
       hints = "It is also called a hash or number sign.",
       correct_result = "#",
       success = "The cipher accepts the mark. Good comments explain why the code exists."
+    ),
+    .room(
+      id = "webglm",
+      module = "Reproducible workflow",
+      title = "The Web Data Model",
+      learning_goal = "Read data from a web link and fit a Poisson GLM.",
+      introduction = "A terminal flickers with a link to a data file stored far outside the room.",
+      challenge = "Read the CSV file at https://ars.els-cdn.com/content/image/1-s2.0-S1364815217301615-mmc2.csv. Fit a Poisson GLM for species richness, in species.richness, as a function of latitude, in lat.sample. Submit the coefficient for lat.sample rounded to 3 decimal places.",
+      hints = c(
+        "glm() fits generalized linear models. For a Poisson GLM, use family = poisson.",
+        "coef() allows you to extract coefficients from a fitted GLM."
+      ),
+      correct_result = 0.406,
+      success = "The remote data stream resolves into a model. Even web links can become evidence when the workflow is reproducible."
     ),
     .room(
       id = "quarto",

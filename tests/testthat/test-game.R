@@ -1,8 +1,9 @@
 test_that("rooms can be listed", {
   rooms <- list_rooms()
-  expect_equal(nrow(rooms), 19)
+  expect_equal(nrow(rooms), 20)
   expect_true(all(c("room", "id", "module", "title", "learning_goal") %in% names(rooms)))
   expect_true(all(nchar(rooms$id) <= 8))
+  expect_equal(tail(rooms$id, 2), c("webglm", "quarto"))
 })
 
 test_that("game can start and accept first answer", {
@@ -138,4 +139,18 @@ test_that("hidden data room checks answer and custom failure message", {
     escapeR:::.failure_message(room),
     "That is not the information we are looking for; please try again!"
   )
+})
+
+test_that("web GLM room is before final room and checks rounded coefficient", {
+  rooms <- escapeR:::.rooms()
+  room <- rooms[[length(rooms) - 1L]]
+  expect_equal(room$id, "webglm")
+  expect_match(room$task, "species\\.richness")
+  expect_match(room$task, "lat\\.sample")
+  expect_equal(length(room$hint), 2)
+  expect_match(room$hint[[1]], "glm\\(\\)")
+  expect_match(room$hint[[2]], "coef\\(\\)")
+  expect_true(room$checker(0.406))
+  expect_false(room$checker(0.405))
+  expect_equal(rooms[[length(rooms)]]$id, "quarto")
 })
