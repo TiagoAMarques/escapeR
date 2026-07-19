@@ -7,13 +7,13 @@ test_that("rooms can be listed", {
 
 test_that("game can start and accept first answer", {
   player <- paste0("test_", Sys.getpid())
-  start_escape(player = player, reset = TRUE)
+  escape(player = player, reset = TRUE)
   expect_true(submit(70))
 })
 
-test_that("start command is not accepted as a player name", {
+test_that("escape command is not accepted as a player name", {
   expect_error(
-    start_escape(player = "start_escape()"),
+    escape(player = "escape()"),
     "looks like an R command"
   )
 })
@@ -63,7 +63,7 @@ test_that("custom rooms can be registered and composed", {
   expect_equal(vapply(custom$rooms, `[[`, character(1), "id"), custom$room_ids)
 
   player <- paste0("custom_", Sys.getpid())
-  start_escape(player = player, reset = TRUE, escape = custom)
+  escape(player = player, reset = TRUE, escape = custom)
   expect_true(submit(1))
   expect_equal(escapeR:::.state$progress$room, 2L)
 })

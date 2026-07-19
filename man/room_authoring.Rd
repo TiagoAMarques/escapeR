@@ -35,5 +35,5 @@ register_rooms(..., replace = FALSE)
 \item{...}{Room objects created by \code{new_room()}, or a list of room objects.}
 \item{replace}{Logical. If \code{TRUE}, replace a previously registered room with the same ID.}
 }
-\value{\code{build_escape()} returns an escape sequence object for \code{start_escape()}. \code{list_escapes()} returns a data frame of registered sequences. \code{new_room()} returns a modular room object. \code{new_room_pack()} returns a shareable room pack. Registration helpers return IDs invisibly.}
+\value{\code{build_escape()} returns an escape sequence object for \code{escape()}. \code{list_escapes()} returns a data frame of registered sequences. \code{new_room()} returns a modular room object. \code{new_room_pack()} returns a shareable room pack. Registration helpers return IDs invisibly.}
 \description{Helpers for composing custom escape-room sequences and adding contributed rooms or room packs.}

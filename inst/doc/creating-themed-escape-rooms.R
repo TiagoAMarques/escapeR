@@ -90,7 +90,7 @@ medicine_escape <- build_escape("medfull")
 medicine_escape$room_ids
 
 ## ----eval = FALSE-------------------------------------------------------------
-# start_escape(player = "demo_medicine", reset = TRUE, escape = medicine_escape)
+# escape(player = "demo_medicine", reset = TRUE, escape = medicine_escape)
 # 
 # # Room 1 answer
 # submit(130)

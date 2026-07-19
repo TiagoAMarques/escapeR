@@ -56,7 +56,7 @@
 
 .require_game <- function() {
   if (is.null(.state$progress)) {
-    stop("No active escapeR game. Run start_escape() first.", call. = FALSE)
+    stop("No active escapeR game. Run escape() first.", call. = FALSE)
   }
   invisible(.state$progress)
 }

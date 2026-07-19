@@ -6,7 +6,8 @@
 #' @param escape Escape sequence created by `build_escape()`, or a character
 #'   vector of room IDs. Defaults to the bundled room sequence.
 #' @return Invisibly returns the current progress list.
-start_escape <- function(player = NULL, reset = FALSE, escape = NULL) {
+#' @export
+escape <- function(player = NULL, reset = FALSE, escape = NULL) {
   if (is.null(player)) {
     if (!interactive()) {
       stop("Please provide player = in non-interactive sessions.", call. = FALSE)
@@ -20,7 +21,7 @@ start_escape <- function(player = NULL, reset = FALSE, escape = NULL) {
   }
   if (grepl("^(start_escape|escape)\\s*\\(", player)) {
     stop(
-      "That looks like an R command, not a player name. Run start_escape() at the R prompt, then type only your name when asked.",
+      "That looks like an R command, not a player name. Run escape() at the R prompt, then type only your name when asked.",
       call. = FALSE
     )
   }
@@ -42,13 +43,6 @@ start_escape <- function(player = NULL, reset = FALSE, escape = NULL) {
   message("Welcome, ", player, ".")
   play()
   invisible(progress)
-}
-
-#' Alias for starting the game
-#'
-#' @rdname start_escape
-escape <- function(player = NULL, reset = FALSE, escape = NULL) {
-  start_escape(player = player, reset = reset, escape = escape)
 }
 
 #' Show the current room
@@ -178,7 +172,7 @@ status <- function() {
 reset_game <- function(player = NULL) {
   if (is.null(player)) {
     if (is.null(.state$player)) {
-      stop("No active player. Provide player = or run start_escape().", call. = FALSE)
+      stop("No active player. Provide player = or run escape().", call. = FALSE)
     }
     player <- .state$player
   }

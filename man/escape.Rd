@@ -1,10 +1,7 @@
-\name{start_escape}
-\alias{start_escape}
+\name{escape}
 \alias{escape}
 \title{Start or Resume an escapeR Game}
 \usage{
-start_escape(player = NULL, reset = FALSE, escape = NULL)
-
 escape(player = NULL, reset = FALSE, escape = NULL)
 }
 \arguments{

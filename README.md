@@ -41,7 +41,7 @@ remotes::install_github("TiagoAMarques/escapeR")
 
 ```r
 library(escapeR)
-start_escape()
+escape()
 ```
 
 Returning players can use the same name and continue from saved progress.
@@ -59,6 +59,12 @@ reset_game()
 
 Progress is saved with `tools::R_user_dir("escapeR", "data")`, so each student
 can resume later on the same machine.
+
+For a fuller walkthrough, see:
+
+```r
+vignette("getting-started-with-escapeR", package = "escapeR")
+```
 
 ## Current room sequence
 
@@ -82,7 +88,7 @@ Instructors can compose a shorter or themed escape from room IDs:
 
 ```r
 river_escape <- build_escape(c("console", "vector", "plotwin"))
-start_escape(player = "student1", reset = TRUE, escape = river_escape)
+escape(player = "student1", reset = TRUE, escape = river_escape)
 ```
 
 Contributors can also create and register add-on rooms:

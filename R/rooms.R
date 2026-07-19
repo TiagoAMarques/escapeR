@@ -263,7 +263,7 @@ register_room_pack <- function(pack, replace = FALSE) {
 #'
 #' @param rooms Character vector of room IDs. Use `list_rooms()` to see the
 #'   bundled rooms that can be combined.
-#' @return An escape sequence object that can be passed to `start_escape()`.
+#' @return An escape sequence object that can be passed to `escape()`.
 #' @export
 build_escape <- function(rooms = .builtin_room_ids()) {
   if (length(rooms) == 1L && exists(tolower(rooms), envir = .escape_addons, inherits = FALSE)) {
@@ -347,7 +347,7 @@ list_escapes <- function() {
       title = "Finding Data",
       learning_goal = "Find and inspect built-in R datasets.",
       introduction = "A catalogue of built-in data sets waits on a reading desk.",
-      challenge = "In the package Datasets there's a dataset that reminds one of candy. It has 84 rows. What is the result of the division of the height of seed 331 at age 10 divided by the height of that seed at age 5. Based on that information, how much did that plant grow per year during that period, rounded to two decimal places?",
+      challenge = "In the package Datasets there's a dataset that reminds one of candy. It has 84 rows. How much did seed 331 grew between ages 5 and 10 years? Based on that information, how much did that plant grow per year during that period, rounded to two decimal places? That is the number you need to use to open the lock.",
       hints = c(
         "You can inspect a dataset by using library(help = \"datasets\")",
         "lolly is a candy :) "
