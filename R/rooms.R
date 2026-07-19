@@ -455,7 +455,7 @@ list_escapes <- function() {
       title = "The Model Room",
       learning_goal = "Fit and interpret a simple linear model.",
       introduction = "A whiteboard says abundance is never just a number; it is a relationship.",
-      challenge = "Fit lm(count ~ distance_m, data = survey_counts()). Look at the distance_m coefficient. Is it above or below zero?",
+      challenge = "Still with the same dataset in survey_counts(), fit a simple regression model of the count as a function of distance. Look at the distance_m coefficient. Is it above or below zero?",
       hints = "coef() gives model coefficients. The coefficient named distance_m describes the slope.",
       checker = function(answer) .answer_text(answer) %in% c("below", "below zero", "negative", "neg", "-"),
       success = "The model room unlocks. Coefficients are clues, not decorations."
