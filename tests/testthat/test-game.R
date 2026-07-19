@@ -106,11 +106,23 @@ test_that("room packs register rooms and named escapes", {
 })
 
 test_that("helper data have expected shape", {
-  expect_equal(nrow(survey_counts()), 14)
+  d <- survey_counts()
+  expect_equal(nrow(d), 20)
   expect_equal(sum(is.na(survey_counts())), 2)
+  expect_equal(sum(d$distance_m > 90 & d$detected), 2)
+  expect_equal(read.csv(escapeR_file("survey_counts.csv")), d)
   expect_equal(nrow(read.csv(escapeR_file("dados1.csv"))), 25)
-  expect_equal(nrow(read.csv(escapeR_file("detection_plot_data.csv"))), 36)
+  expect_equal(system.file("extdata", "detection_plot_data.csv", package = "escapeR"), "")
   expect_true(file.exists(escapeR_file("datahide.txt")))
+})
+
+test_that("plotting room uses survey_counts data", {
+  room <- escapeR:::.rooms()[[7]]
+  expect_equal(room$id, "plotwin")
+  expect_match(room$task, "survey_counts\\(\\)")
+  expect_match(room$hint[[1]], "jitter\\(\\)")
+  expect_true(room$checker(2))
+  expect_false("plot_detection" %in% getNamespaceExports("escapeR"))
 })
 
 test_that("hidden data room checks answer and custom failure message", {

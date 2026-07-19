@@ -394,9 +394,9 @@ list_escapes <- function() {
       title = "The Plotting Window",
       learning_goal = "Make a basic plot and read a visual pattern.",
       introduction = "A window is painted over. It clears only after you draw the detection pattern.",
-      challenge = "Run plot_detection(). How many observations farther than 90 m were detected? Submit that number.",
-      hints = "Check the points with distance_m > 90. In the data, TRUE means detected and FALSE means not detected.",
-      checker = function(answer) identical(as.integer(answer), 0L),
+      challenge = "Using survey_counts(), represent how detection varies with distance_m. Look at the plot: how many observations farther than 90 m were detected? Submit that number.",
+      hints = "Try plot(d$distance_m, jitter(as.integer(d$detected))). jitter() helps you see whether many points share the same coordinate.",
+      checker = function(answer) identical(as.integer(answer), 2L),
       success = "The window clears. The transect is visible."
     ),
     .room(
@@ -407,7 +407,7 @@ list_escapes <- function() {
       introduction = "Tiles on the floor rearrange themselves into habitat names.",
       challenge = "Using survey_counts(), count how many records belong to each habitat. Submit the count for scrub.",
       hints = "table(d$habitat) is a compact way to count categories in a column.",
-      checker = function(answer) identical(as.integer(answer), 4L),
+      checker = function(answer) identical(as.integer(answer), 6L),
       success = "The mosaic settles. Every plot gets easier when the data have first been counted."
     ),
     .room(
@@ -430,7 +430,7 @@ list_escapes <- function() {
       introduction = "A drawer labelled wetland is locked by a mean count.",
       challenge = "Using survey_counts(), submit the mean count for the wetland records.",
       hints = "Use a logical condition inside square brackets to keep one habitat before taking the mean. If missing values appear, mean() has an argument that can remove them.",
-      correct_result = 19,
+      correct_result = 19.5,
       success = "The wetland drawer opens with a soft statistical sigh."
     ),
     .room(
@@ -441,7 +441,7 @@ list_escapes <- function() {
       introduction = "A staircase sorts itself by distance, but one step is still blank.",
       challenge = "Using survey_counts(), find the site with the largest distance_m. Submit its site code.",
       hints = "which.max() returns the position of the largest value in a vector.",
-      correct_result = "s12",
+      correct_result = "s18",
       success = "The staircase locks into order. Extremes often deserve a second look."
     ),
     .room(
@@ -463,7 +463,7 @@ list_escapes <- function() {
       introduction = "A drawer rattles with the bits of data the model did not explain.",
       challenge = "Fit lm(count ~ distance_m, data = survey_counts()). How many residuals does the model have?",
       hints = "residuals(model) returns one residual for each observation used to fit the model.",
-      checker = function(answer) identical(as.integer(answer), 12L),
+      checker = function(answer) identical(as.integer(answer), 18L),
       success = "The drawer quiets. Residuals are not failure; they are the part still asking questions."
     ),
     .room(
@@ -474,7 +474,7 @@ list_escapes <- function() {
       introduction = "A lantern asks what the model expects at a distance not written in the field notebook.",
       challenge = "Fit lm(count ~ distance_m, data = survey_counts()). Predict count at distance_m = 50 and submit the value rounded to one decimal place.",
       hints = "predict() needs a data frame with a column named exactly like the model predictor.",
-      checker = function(answer) .num_equal(answer, 13.2, tolerance = 1e-8),
+      checker = function(answer) .num_equal(answer, 13.9, tolerance = 1e-8),
       success = "The lantern glows. Prediction is interpolation with assumptions attached."
     ),
     .room(
@@ -496,7 +496,7 @@ list_escapes <- function() {
       introduction = "The transect logbook asks how many animals were actually seen.",
       challenge = "Using survey_counts(), submit the total number of detected records.",
       hints = "The detected column is logical, and R treats TRUE as 1 and FALSE as 0 when summed.",
-      checker = function(answer) identical(as.integer(answer), 9L),
+      checker = function(answer) identical(as.integer(answer), 13L),
       success = "The logbook closes. Counts of detections are observations, not yet abundance."
     ),
     .room(
@@ -507,7 +507,7 @@ list_escapes <- function() {
       introduction = "A gate marked 100 m asks how many records would remain inside it.",
       challenge = "Using survey_counts(), count records with distance_m <= 100. Submit that count.",
       hints = "A logical comparison can be counted with sum().",
-      checker = function(answer) identical(as.integer(answer), 12L),
+      checker = function(answer) identical(as.integer(answer), 14L),
       success = "The gate swings open. Truncation is a modelling choice, not a clerical detail."
     ),
     .room(

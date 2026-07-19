@@ -1,41 +1,23 @@
 .survey_counts <- function() {
   data.frame(
-    site = paste0("S", 1:14),
-    habitat = c(rep(c("forest", "scrub", "wetland"), each = 4), "forest", "wetland"),
-    count = c(12, 15, 11, 14, 6, 9, 7, 8, 18, 21, 17, 20, NA, NA),
-    distance_m = c(15, 40, 70, 95, 20, 55, 80, 110, 10, 35, 65, 120, 45, 85),
-    detected = c(TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE),
-    stringsAsFactors = FALSE
-  )
-}
-
-.detection_plot_data <- function() {
-  distance_m <- c(
-    5, 8, 12, 15, 18, 22, 25, 28,
-    31, 35, 38, 42, 45, 48, 52, 55,
-    58, 62, 65, 68, 72, 75, 78, 82,
-    85, 88, 92, 95, 98, 102, 106, 110,
-    115, 120, 126, 132
-  )
-  detected <- c(
-    TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE,
-    TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE,
-    TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE,
-    TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,
-    FALSE, FALSE, FALSE, FALSE
-  )
-  jitter_y <- c(
-    -0.06, 0.05, -0.02, 0.03, -0.04, 0.06, -0.01, 0.04,
-    -0.05, 0.02, 0.05, -0.03, 0.01, -0.06, 0.04, -0.02,
-    0.06, -0.04, 0.03, -0.01, 0.05, -0.05, 0.02, -0.03,
-    0.04, -0.02, 0.03, -0.05, 0.01, -0.03, 0.04, -0.01,
-    0.05, -0.04, 0.02, -0.06
-  )
-
-  data.frame(
-    distance_m = distance_m,
-    detected = detected,
-    plot_y = as.integer(detected) + jitter_y,
+    site = paste0("S", 1:20),
+    habitat = c(
+      rep(c("forest", "scrub", "wetland"), each = 4),
+      "forest", "wetland", "forest", "forest", "scrub", "scrub",
+      "wetland", "wetland"
+    ),
+    count = c(
+      12, 15, 11, 14, 6, 9, 7, 8, 18, 21,
+      17, 20, NA, NA, 13, 9, 10, 5, 19, 22
+    ),
+    distance_m = c(
+      15, 40, 70, 95, 20, 55, 80, 110, 10, 35,
+      65, 120, 45, 85, 105, 130, 125, 140, 75, 88
+    ),
+    detected = c(
+      TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, TRUE,
+      TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, TRUE
+    ),
     stringsAsFactors = FALSE
   )
 }
@@ -55,7 +37,6 @@
     return(invisible(FALSE))
   }
   utils::write.csv(.survey_counts(), file.path(dir, "survey_counts.csv"), row.names = FALSE)
-  utils::write.csv(.detection_plot_data(), file.path(dir, "detection_plot_data.csv"), row.names = FALSE)
   utils::write.csv(.tutorial_data(), file.path(dir, "dados1.csv"), row.names = FALSE)
   invisible(TRUE)
 }

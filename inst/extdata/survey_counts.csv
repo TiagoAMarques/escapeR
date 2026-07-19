@@ -13,3 +13,9 @@ S11,wetland,17,65,TRUE
 S12,wetland,20,120,FALSE
 S13,forest,,45,TRUE
 S14,wetland,,85,FALSE
+S15,forest,13,105,TRUE
+S16,forest,9,130,FALSE
+S17,scrub,10,125,TRUE
+S18,scrub,5,140,FALSE
+S19,wetland,19,75,TRUE
+S20,wetland,22,88,TRUE
