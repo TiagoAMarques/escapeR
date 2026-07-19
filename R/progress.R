@@ -42,10 +42,29 @@
     if (is.null(progress$hints)) {
       progress$hints <- integer()
     }
-    progress
+    progress <- .migrate_progress(progress)
+    .save_progress(progress)
   } else {
     .new_progress(player)
   }
+}
+
+.migrate_progress <- function(progress) {
+  old_builtin_ids <- c(
+    "console", "vector", "finddata", "datatab", "columns", "missing",
+    "plotwin", "habitat", "hidden", "subset", "sorting", "model",
+    "resid", "predict", "detectp", "detect", "trunc", "comment",
+    "quarto"
+  )
+
+  if (
+    !isTRUE(progress$completed) &&
+      identical(progress$escape_ids, old_builtin_ids)
+  ) {
+    progress$escape_ids <- .builtin_room_ids()
+  }
+
+  progress
 }
 
 .save_progress <- function(progress) {

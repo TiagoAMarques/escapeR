@@ -154,3 +154,28 @@ test_that("web GLM room is before final room and checks rounded coefficient", {
   expect_false(room$checker(0.405))
   expect_equal(rooms[[length(rooms)]]$id, "quarto")
 })
+
+test_that("old default saved games migrate to include web GLM room", {
+  old_ids <- c(
+    "console", "vector", "finddata", "datatab", "columns", "missing",
+    "plotwin", "habitat", "hidden", "subset", "sorting", "model",
+    "resid", "predict", "detectp", "detect", "trunc", "comment",
+    "quarto"
+  )
+  progress <- escapeR:::.new_progress("migration_test", escape_ids = old_ids)
+  progress$room <- 19L
+
+  migrated <- escapeR:::.migrate_progress(progress)
+
+  expect_equal(tail(migrated$escape_ids, 2), c("webglm", "quarto"))
+  expect_equal(escapeR:::.current_room(migrated)$id, "webglm")
+})
+
+test_that("completed or custom saved games are not migrated", {
+  completed <- escapeR:::.new_progress("migration_done", escape_ids = c("comment", "quarto"))
+  completed$completed <- TRUE
+  custom <- escapeR:::.new_progress("migration_custom", escape_ids = c("comment", "quarto"))
+
+  expect_equal(escapeR:::.migrate_progress(completed)$escape_ids, c("comment", "quarto"))
+  expect_equal(escapeR:::.migrate_progress(custom)$escape_ids, c("comment", "quarto"))
+})
