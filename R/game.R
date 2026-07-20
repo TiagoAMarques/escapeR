@@ -95,6 +95,7 @@ submit <- function(answer) {
   }
 
   message(room$success)
+  progress$history <- .normalize_history(progress$history)
   progress$history <- rbind(
     progress$history,
     data.frame(

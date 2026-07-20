@@ -22,13 +22,7 @@
     updated = Sys.time(),
     completed = FALSE,
     hints = integer(),
-    history = data.frame(
-      room = integer(),
-      id = character(),
-      title = character(),
-      solved_at = as.POSIXct(character()),
-      stringsAsFactors = FALSE
-    )
+    history = .empty_history()
   )
 }
 
@@ -64,7 +58,47 @@
     progress$escape_ids <- .builtin_room_ids()
   }
 
+  progress$history <- .normalize_history(progress$history)
+
   progress
+}
+
+.empty_history <- function() {
+  data.frame(
+    room = integer(),
+    id = character(),
+    title = character(),
+    solved_at = as.POSIXct(character()),
+    stringsAsFactors = FALSE
+  )
+}
+
+.normalize_history <- function(history) {
+  if (is.null(history) || !is.data.frame(history)) {
+    return(.empty_history())
+  }
+
+  n <- nrow(history)
+  if (!"room" %in% names(history)) {
+    history$room <- rep(NA_integer_, n)
+  }
+  if (!"id" %in% names(history)) {
+    history$id <- rep(NA_character_, n)
+  }
+  if (!"title" %in% names(history)) {
+    history$title <- rep(NA_character_, n)
+  }
+  if (!"solved_at" %in% names(history)) {
+    history$solved_at <- as.POSIXct(rep(NA_character_, n))
+  }
+
+  data.frame(
+    room = as.integer(history$room),
+    id = as.character(history$id),
+    title = as.character(history$title),
+    solved_at = as.POSIXct(history$solved_at),
+    stringsAsFactors = FALSE
+  )
 }
 
 .save_progress <- function(progress) {

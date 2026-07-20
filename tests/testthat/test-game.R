@@ -180,6 +180,43 @@ test_that("completed or custom saved games are not migrated", {
   expect_equal(escapeR:::.migrate_progress(custom)$escape_ids, c("comment", "quarto"))
 })
 
+test_that("old progress history shapes are normalized", {
+  old_history <- data.frame(
+    room = 1L,
+    id = "console",
+    solved_at = Sys.time(),
+    stringsAsFactors = FALSE
+  )
+
+  normalized <- escapeR:::.normalize_history(old_history)
+
+  expect_equal(names(normalized), c("room", "id", "title", "solved_at"))
+  expect_equal(nrow(normalized), 1)
+  expect_equal(normalized$id, "console")
+  expect_true(is.na(normalized$title))
+})
+
+test_that("submit can append to old progress history", {
+  builtin_ids <- escapeR:::.builtin_room_ids()
+  progress <- escapeR:::.new_progress("old_history")
+  progress$escape_ids <- builtin_ids
+  progress$room <- 2L
+  progress$history <- data.frame(
+    room = 1L,
+    id = "console",
+    solved_at = Sys.time(),
+    stringsAsFactors = FALSE
+  )
+  state <- getFromNamespace(".state", "escapeR")
+  state$player <- progress$player
+  state$progress <- progress
+
+  expect_true(submit(15))
+  expect_equal(names(state$progress$history), c("room", "id", "title", "solved_at"))
+  expect_equal(nrow(state$progress$history), 2)
+  expect_equal(tail(state$progress$history$id, 1), "vector")
+})
+
 test_that("final challenge responds to player choice", {
   expect_message(
     expect_message(
