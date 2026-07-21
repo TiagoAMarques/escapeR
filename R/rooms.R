@@ -347,7 +347,7 @@ list_escapes <- function() {
       title = "Finding Data",
       learning_goal = "Find and inspect built-in R datasets.",
       introduction = "A catalogue of built-in data sets waits on a reading desk.",
-      challenge = "In the package Datasets there's a dataset that reminds one of candy. It has 84 rows. How much did seed 331 grew between ages 5 and 10 years? Based on that information, how much did that plant grow per year during that period, rounded to two decimal places? That is the number you need to use to open the lock.",
+      challenge = "In the package datasets there's a dataset that reminds one of candy. It has 84 rows. How much did seed 331 grew between ages 5 and 10 years? Based on that information, how much did that plant grow per year during that period, rounded to two decimal places? That is the number you need to use to open the lock.",
       hints = c(
         "You can inspect a dataset by using library(help = \"datasets\")",
         "lolly is a candy :) "

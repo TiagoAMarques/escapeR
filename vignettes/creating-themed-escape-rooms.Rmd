@@ -11,10 +11,7 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
-`escapeR` was first created inside an Ecological Statistics course. The bundled
-rooms therefore use ecological examples: field counts, survey data, detection,
-modelling, and reproducible reporting. The package architecture is more general
-than that, however. An escape room is just a sequence of small tasks where
+`escapeR` was first created within the realms of an Ecological Statistics course. The bundled rooms therefore use ecological examples: field counts, survey data, detection, modelling, and reproducible reporting. The package architecture is more general than that, however. An escape room is just a sequence of small tasks where
 students use R to unlock the next step.
 
 This vignette explains how to create rooms in any theme, such as medicine,
@@ -22,9 +19,11 @@ agriculture, social sciences, economics, psychology, or environmental policy. It
 also shows how to bundle those rooms into a shareable room pack that can be
 submitted to the `escapeR` GitHub repository.
 
+I would be really happy to receive new rooms and quests to add to `escapeR`. If you want t9o do so, please use the usual github pull request way.
+
 ## The room architecture
 
-Every room is built from separate components:
+Every room is built from up to eleven separate components:
 
 - `id`: a short unique identifier, at most 8 characters, such as `"bpmean"` or
   `"yield"`.
@@ -40,10 +39,7 @@ Every room is built from separate components:
 - `success`: the message shown after a correct answer.
 - `failure`: an optional message shown after a wrong answer.
 
-Most beginner rooms only need `correct_result`. For example, if the correct
-answer is `130`, `escapeR` checks numeric submissions with a small tolerance. If
-the correct answer is `"high"`, `escapeR` checks text after trimming spaces and
-ignoring case. Use `checker` when you need more control.
+Most beginner rooms only need a simple `correct_result`. For example, if the correct answer is `130`, `escapeR` checks numeric submissions with a small tolerance. If the correct answer is `"high"`, `escapeR` checks text after trimming spaces and ignoring case. Use `checker` when you need more control.
 
 ## Step 1: choose a theme
 
@@ -59,8 +55,7 @@ Examples:
 - Social sciences: calculate average survey satisfaction, tabulate responses,
   or classify whether an unemployment rate increased.
 
-For a first contribution, aim for two or three rooms. That is enough to create a
-small story arc while keeping the pull request easy to review.
+Important: For a first contribution, aim for two or three rooms. That is enough to create a small story arc while keeping the pull request easy to review.
 
 ## Step 2: create individual rooms
 
@@ -82,16 +77,16 @@ bpmean <- new_room(
     "three patients seen before lunch."
   ),
   challenge = paste(
-    "Create a vector with the values 120, 130, and 140.",
-    "What is the average systolic blood pressure? Submit the mean."
+    "Create a vector with the values 120, 124, 111, 182, 130, and 145.",
+    "What is the average systolic blood pressure? Submit the mean, rounded to 1 decimal."
   ),
   hints = c(
-    "Use c() to combine the three readings into one vector.",
+    "Use c() to combine multiple readings into one vector.",
     "Use mean() to calculate the average of a numeric vector."
   ),
-  correct_result = 130,
+  correct_result = 133.3,
   success = "The intake sheet is complete, and the first cabinet opens.",
-  failure = "Not quite. Check that all three readings are included before taking the mean."
+  failure = "Not quite, young doctor. Check that all readings are included before taking the mean."
 )
 
 riskcat <- new_room(
@@ -165,7 +160,7 @@ is a two-room activity and `medfull` uses all three rooms.
 
 ## Step 4: test locally
 
-Register the pack in your R session, inspect the rooms and escape sequences, and
+Help me even further. Before submitting a pull request, register the pack in your R session, inspect the rooms and escape sequences, and
 then start a test game.
 
 ```{r}
@@ -184,7 +179,7 @@ To play it interactively:
 escape(player = "demo_medicine", reset = TRUE, escape = medicine_escape)
 
 # Room 1 answer
-submit(130)
+submit(133.3)
 
 # Room 2 answer
 submit("high")
@@ -193,8 +188,7 @@ submit("high")
 submit(0.2)
 ```
 
-When developing a pack, test wrong answers as well. Good failure messages help
-students recover without giving away the whole solution.
+When developing a pack, test wrong answers as well, use both numbers and text, and R expressions. Note good failure messages help students recover, maybe advance a bit (like a small hint, possibly), without giving away the whole solution.
 
 ## Step 5: use a custom checker when needed
 
@@ -226,6 +220,23 @@ Custom checkers should be short and predictable. They must return `TRUE` only
 when the answer should unlock the room.
 
 ## Step 6: prepare a GitHub contribution
+
+### Short and sweet
+
+In a pull request, include:
+
+1. The room-pack file.
+2. A short test file.
+3. Any small data files, if needed, under `inst/extdata/`.
+4. A short README or vignette paragraph if the pack introduces a new teaching
+   theme.
+
+If the pull request is accepted, the pack can be integrated into the package by
+keeping the submitted room-pack function and registering the pack from package
+code or examples. The room IDs and escape sequence IDs then become available to
+other users through `list_rooms()`, `list_escapes()`, and `build_escape()`.
+
+### The details
 
 To submit rooms for integration into `escapeR`, place the room pack in a single
 R file. A good file name uses the pack theme, for example:
@@ -315,7 +326,38 @@ medicine_room_pack <- function() {
 }
 ```
 
-Then add a small test file, for example `tests/testthat/test-room-pack-medicine.R`:
+Then add a small test file. A good option is to do so by leveraging package `testthat`. It provides a framework for writing automated tests for R code, especially R packages. Its central function is `test_that()`, which groups related expectations. Here's a simple example:
+
+```{r, eval = FALSE}
+library(testthat)
+
+test_that("addition works", {
+  result <- 2 + 2
+  expect_equal(result, 4)
+})
+```
+
+Here:
+
+* `test_that("addition works", { ... })` describes the behavior being tested.
+* `expect_equal(result, 4)` checks that the result equals the expected value.
+* If the expectation fails, `testthat` reports what went wrong and where.
+
+Other common `testthat` "expectations" include:
+
+```{r, eval = FALSE}
+expect_true(x > 0) # whether a condition holds
+expect_false(is.na(x)) # whether a condition does not hold
+expect_error(log("text")) # whether an error is triggered
+expect_warning(sqrt(-1)) #whether an warning is triggered
+expect_type(x, "double")  # whether an object is of a given internal R type, as returned by typeof()
+```
+
+For an R package, tests normally live in `tests/testthat/` and can be run with:
+`devtools::test()`
+In short, `testthat` helps detect bugs and ensures that later code changes do not break behavior that previously worked.
+
+As an `escapeR` example see `tests/testthat/test-room-pack-medicine.R`:
 
 ```{r, eval = FALSE}
 test_that("medicine room pack can be registered and played", {
@@ -330,19 +372,6 @@ test_that("medicine room pack can be registered and played", {
 })
 ```
 
-In a pull request, include:
-
-1. The room-pack file.
-2. A short test file.
-3. Any small data files, if needed, under `inst/extdata/`.
-4. A short README or vignette paragraph if the pack introduces a new teaching
-   theme.
-
-If the pull request is accepted, the pack can be integrated into the package by
-keeping the submitted room-pack function and registering the pack from package
-code or examples. The room IDs and escape sequence IDs then become available to
-other users through `list_rooms()`, `list_escapes()`, and `build_escape()`.
-
 ## Design advice
 
 Write rooms for learners, not for answer keys. A useful room should:
@@ -356,5 +385,4 @@ Write rooms for learners, not for answer keys. A useful room should:
 - use short stable IDs that will not clash with other packs.
 
 The ecology rooms bundled with `escapeR` are one theme. The same architecture can
-support medicine, agriculture, social sciences, and many other domains, as long
-as each room remains a small, testable R learning step.
+support any other domain, as long as each room remains a small, testable R learning step.

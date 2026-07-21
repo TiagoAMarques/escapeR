@@ -13,7 +13,7 @@ library(escapeR)
 ```
 
 `escapeR` is a small escape-room game for learning R through ecological
-statistics. Each room gives you a story, a task, and a lock. You solve the task
+statistics. Each room gives you a thread of the whole story, a task, and a lock. You solve the task
 with ordinary R commands, then submit the answer to move to the next room.
 
 The bundled quest starts with R foundations and moves through data import,
@@ -22,7 +22,7 @@ ideas, and reproducible workflows.
 
 ## Start your first quest
 
-Load the package and call `escape()`:
+To start playing you simply need to load the package and call `escape()`:
 
 ```{r, eval = FALSE}
 library(escapeR)
@@ -61,7 +61,7 @@ If the answer is correct, `escapeR` shows the success message and moves you to
 the next room. If the answer is not correct, the room remains locked and you can
 try again.
 
-Text answers can be submitted as character strings:
+While numeric answers are submitted as is, text answers should be submitted as character strings:
 
 ```{r, eval = FALSE}
 submit("negative")
@@ -111,9 +111,7 @@ Use `status()` to see where you are:
 status()
 ```
 
-This tells you the active player, how many rooms have been solved, and which
-room is current. It is useful during longer activities or when returning to the
-game after a break.
+This tells you the active player, how many rooms have been solved out of those in the game, and which room is current. It is useful during longer activities or when returning to the game after a break.
 
 ## Resume later
 
@@ -150,22 +148,22 @@ escape(player = "ana", reset = TRUE)
 ```
 
 Use resetting with care in class: it deliberately starts that player's progress
-again from room 1.
+again from room 1, so all previous progress is lost.
 
 ## Find the bundled data files
 
 Several rooms ask you to read or inspect files included with the package. Use
-`escapeR_file()` to find them:
+`escapeR_file()` to find them. As an example, if a data file was called "dataX.csv" you would use
 
 ```{r}
-escapeR_file("dados1.csv")
+escapeR_file("dataX.csv"")
 ```
 
-For example, a room might ask you to read a CSV file:
+For example, a room might ask you to read a CSV file and then inspect it. One option would then be
 
 ```{r, eval = FALSE}
-d <- read.csv(escapeR_file("dados1.csv"))
-nrow(d)
+d <- read.csv(escapeR_file("dataX.csv""))
+head(d)
 ```
 
 The package also provides a small survey data set:
@@ -185,11 +183,11 @@ Use `list_rooms()` to inspect the bundled room sequence:
 list_rooms()
 ```
 
-The `id` column is useful when building a shorter custom quest.
+The `id` column is useful when building a shorter custom quest, where you can provide a list of rooms to be played as a separate quest. See next section and the corresponding dedicated vignette for details on how to create new rooms and quests.
 
 ## Play a shorter or custom quest
 
-Instructors can build a quest from selected room IDs:
+Instructors can build a quest from selected room IDs, as an example here, a mini 3-room quest:
 
 ```{r, eval = FALSE}
 short_quest <- build_escape(c("console", "vector", "plotwin"))
@@ -223,4 +221,4 @@ list_rooms()   # inspect available rooms
 ```
 
 The most important habit is to solve the room in ordinary R first. The game is
-the lock; R is the key.
+the lock; R is the key. Can you get out?
