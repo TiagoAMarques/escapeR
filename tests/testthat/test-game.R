@@ -26,8 +26,10 @@ test_that("vector room has sequential hints and updated answer", {
   expect_equal(length(room$hint), 2)
   expect_true(grepl("c\\(", room$hint[[1]]))
   expect_true(grepl("seq\\(1, 29, 4\\)", room$hint[[2]]))
-  expect_true(room$checker(15))
-  expect_false(room$checker(7.5))
+  expect_false("correct_result" %in% names(room))
+  expect_false("checker" %in% names(room))
+  expect_true(escapeR:::.check_room_answer("vector", 15))
+  expect_false(escapeR:::.check_room_answer("vector", 7.5))
 })
 
 test_that("finding data room uses the Loblolly growth answer", {
@@ -37,8 +39,8 @@ test_that("finding data room uses the Loblolly growth answer", {
   expect_equal(length(room$hint), 2)
   expect_match(room$hint[[1]], "library\\(help = \"datasets\"\\)", fixed = FALSE)
   expect_equal(room$hint[[2]], "lolly is a candy :) ")
-  expect_true(room$checker(3.36))
-  expect_false(room$checker(2.86))
+  expect_true(escapeR:::.check_room_answer("finddata", 3.36))
+  expect_false(escapeR:::.check_room_answer("finddata", 2.86))
 })
 
 test_that("custom rooms can be registered and composed", {
@@ -53,20 +55,37 @@ test_that("custom rooms can be registered and composed", {
     correct_result = 1,
     success = "The add-on door opens."
   )
+  checked <- new_room(
+    id = "addon2",
+    module = "Contributed rooms",
+    title = "The Checked Door",
+    learning_goal = "Use a custom answer checker.",
+    introduction = "A second contributed room tests a flexible answer.",
+    challenge = "Submit either R or r.",
+    hints = "The language has a one-letter name.",
+    checker = function(answer) identical(tolower(trimws(as.character(answer))), "r"),
+    success = "The checked door opens."
+  )
 
   expect_equal(addon$introduction, addon$story)
   expect_equal(addon$challenge, addon$task)
   expect_equal(addon$hints, addon$hint)
-  register_rooms(addon, replace = TRUE)
+  register_rooms(addon, checked, replace = TRUE)
 
-  custom <- build_escape(c("addon1", "vector"))
-  expect_equal(custom$room_ids, c("addon1", "vector"))
+  custom <- build_escape(c("addon1", "addon2", "vector"))
+  expect_equal(custom$room_ids, c("addon1", "addon2", "vector"))
   expect_equal(vapply(custom$rooms, `[[`, character(1), "id"), custom$room_ids)
+  expect_true(all(vapply(custom$rooms, function(room) {
+    !any(c("correct_result", "checker") %in% names(room))
+  }, logical(1))))
 
   player <- paste0("custom_", Sys.getpid())
   escape(player = player, reset = TRUE, escape = custom)
   expect_true(submit(1))
   expect_equal(escapeR:::.state$progress$room, 2L)
+  expect_false(submit("not r"))
+  expect_true(submit(" R "))
+  expect_equal(escapeR:::.state$progress$room, 3L)
 })
 
 test_that("room packs register rooms and named escapes", {
@@ -106,6 +125,35 @@ test_that("room packs register rooms and named escapes", {
   expect_equal(build_escape("medmini")$room_ids, c("bpmean", "riskcat"))
 })
 
+test_that("bundled room packs are registered through the package hook", {
+  bundled_room <- new_room(
+    id = "hookroom",
+    module = "Contributor test",
+    title = "The Registration Hook",
+    learning_goal = "Verify permanent pack integration.",
+    introduction = "A contributed pack is waiting at package startup.",
+    challenge = "Submit ready.",
+    hints = "The expected word appears in the challenge.",
+    correct_result = "ready",
+    success = "The contributed pack is registered."
+  )
+  bundled_pack <- new_room_pack(
+    id = "hookpack",
+    title = "Registration hook test",
+    description = "Checks the package-side bundled-pack registration path.",
+    rooms = list(bundled_room),
+    escapes = list(hookgame = "hookroom")
+  )
+
+  expect_equal(
+    escapeR:::.register_bundled_room_packs(list(bundled_pack)),
+    "hookpack"
+  )
+  expect_true("hookroom" %in% list_rooms()$id)
+  expect_true("hookgame" %in% list_escapes()$id)
+  expect_equal(build_escape("hookgame")$room_ids, "hookroom")
+})
+
 test_that("helper data have expected shape", {
   d <- survey_counts()
   expect_equal(nrow(d), 20)
@@ -122,7 +170,7 @@ test_that("plotting room uses survey_counts data", {
   expect_equal(room$id, "plotwin")
   expect_match(room$task, "survey_counts\\(\\)")
   expect_match(room$hint[[1]], "jitter\\(\\)")
-  expect_true(room$checker(2))
+  expect_true(escapeR:::.check_room_answer("plotwin", 2))
   expect_false("plot_detection" %in% getNamespaceExports("escapeR"))
 })
 
@@ -133,8 +181,8 @@ test_that("hidden data room checks answer and custom failure message", {
   expect_match(room$hint[[2]], "read.table\\(\\)")
   expect_match(room$hint[[3]], "header")
   expect_match(room$hint[[4]], "\\?par")
-  expect_true(room$checker(" information "))
-  expect_false(room$checker("data"))
+  expect_true(escapeR:::.check_room_answer("hidden", " information "))
+  expect_false(escapeR:::.check_room_answer("hidden", "data"))
   expect_equal(
     escapeR:::.failure_message(room),
     "That is not the information we are looking for; please try again!"
@@ -150,8 +198,8 @@ test_that("web GLM room is before final room and checks rounded coefficient", {
   expect_equal(length(room$hint), 2)
   expect_match(room$hint[[1]], "glm\\(\\)")
   expect_match(room$hint[[2]], "coef\\(\\)")
-  expect_true(room$checker(0.406))
-  expect_false(room$checker(0.405))
+  expect_true(escapeR:::.check_room_answer("webglm", 0.406))
+  expect_false(escapeR:::.check_room_answer("webglm", 0.405))
   expect_equal(rooms[[length(rooms)]]$id, "quarto")
 })
 

@@ -87,7 +87,7 @@ submit <- function(answer) {
     return(invisible(TRUE))
   }
 
-  ok <- isTRUE(room$checker(answer))
+  ok <- .check_room_answer(room$id, answer)
   if (!ok) {
     message(.failure_message(room))
     message("Try again, or call hint() if you want a nudge.")

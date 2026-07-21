@@ -256,7 +256,23 @@ register_room_pack <- function(pack, replace = FALSE) {
   if (length(missing)) {
     stop("Unknown room ID: ", paste(missing, collapse = ", "), call. = FALSE)
   }
-  unname(registry[ids])
+  unname(lapply(registry[ids], .public_room))
+}
+
+.public_room <- function(room) {
+  room$correct_result <- NULL
+  room$checker <- NULL
+  room
+}
+
+.check_room_answer <- function(id, answer) {
+  registry <- .room_registry()
+  id <- tolower(as.character(id)[1])
+  room <- registry[[id]]
+  if (is.null(room)) {
+    stop("Unknown room ID: ", id, call. = FALSE)
+  }
+  isTRUE(room$checker(answer))
 }
 
 #' Build a custom escape room sequence

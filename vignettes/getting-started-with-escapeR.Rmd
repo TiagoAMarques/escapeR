@@ -155,14 +155,14 @@ again from room 1, so all previous progress is lost.
 Several rooms ask you to read or inspect files included with the package. Use
 `escapeR_file()` to find them. As an example, if a data file was called "dataX.csv" you would use
 
-```{r}
-escapeR_file("dataX.csv"")
+```{r, eval=FALSE}
+escapeR_file("dataX.csv")
 ```
 
 For example, a room might ask you to read a CSV file and then inspect it. One option would then be
 
 ```{r, eval = FALSE}
-d <- read.csv(escapeR_file("dataX.csv""))
+d <- read.csv(escapeR_file("dataX.csv"))
 head(d)
 ```
 
