@@ -391,6 +391,15 @@ That is more useful than calling a room's internal checker directly because it
 also tests registration, escape construction, room order, progress, and
 submission handling.
 
+`testthat` is an R package for writing automated checks of code behaviour. A
+call to `test_that()` groups checks for one behaviour and gives that group a
+descriptive name. Inside it, functions beginning with `expect_` state what
+should be true: for example, `expect_equal()` compares values,
+`expect_true()` requires a true result, and `expect_error()` requires an error.
+When an expectation fails, `testthat` reports the failed expectation and its
+location in the test file. This makes it easier to detect when a later code
+change breaks a room that previously worked.
+
 For example:
 
 ```{r, eval = FALSE}
