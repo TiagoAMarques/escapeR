@@ -166,14 +166,22 @@ d <- read.csv(escapeR_file("dataX.csv"))
 head(d)
 ```
 
-The package also provides a small survey data set:
+The package also provides a separate, small survey data set. `survey_counts()`
+returns this data frame directly; it does not read or modify `dados1.csv`. Store
+the returned data frame in an object before working with it:
 
 ```{r}
-head(survey_counts())
+survey <- survey_counts()
+names(survey)
+head(survey)
+sum(is.na(survey))
 ```
 
-This data set appears in several rooms about data quality, summaries, modelling,
-and distance sampling.
+It has five named columns (`site`, `habitat`, `count`, `distance_m`, and
+`detected`). Two values in `count` are `NA`, included deliberately for the data
+quality exercise. By contrast, `dados1.csv` has four columns and no missing
+values. The survey data set appears in several rooms about data quality,
+summaries, modelling, and distance sampling.
 
 ## See available rooms
 

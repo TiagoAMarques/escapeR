@@ -399,8 +399,11 @@ list_escapes <- function() {
       title = "The Missing Value Mirror",
       learning_goal = "Check data quality before analysis.",
       introduction = "A mirror shows a table, but only missing values cast shadows.",
-      challenge = "Using survey_counts(), submit the number of missing values in the whole data set.",
-      hints = "is.na() finds missing values. sum() can count TRUE values.",
+      challenge = "survey_counts() returns a separate five-column data frame; it is not dados1.csv. Save it (for example, survey <- survey_counts()), then submit the number of missing values in it.",
+      hints = c(
+        "The two missing values were deliberately included in the count column; dados1.csv has no missing values.",
+        "is.na(survey) finds missing values. sum() can count the resulting TRUE values."
+      ),
       checker = function(answer) identical(as.integer(answer), 2L),
       success = "Two shadows found. Missing values are not embarrassing; pretending they are not there is."
     ),

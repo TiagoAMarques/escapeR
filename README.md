@@ -98,12 +98,13 @@ vignette("getting-started-with-escapeR", package = "escapeR")
 Some rooms use data bundled with the package:
 
 ```r
-survey_counts()
-escapeR_file("dados1.csv")
+survey <- survey_counts()                       # returns a five-column data frame
+dados <- read.csv(escapeR_file("dados1.csv"))  # a separate four-column CSV
 escapeR_file("datahide.txt")
 ```
 
-The game expects you to work with these just like normal R data: read them,
+`survey` deliberately contains two `NA` values in its `count` column; `dados`
+does not. The game expects you to work with these just like normal R data:
 inspect them, plot them, model them, and check your assumptions.
 
 ## For Instructors
