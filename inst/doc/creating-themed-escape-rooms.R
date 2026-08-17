@@ -91,13 +91,13 @@ medicine_escape$room_ids
 
 ## ----eval = FALSE-------------------------------------------------------------
 # escape(player = "demo_medicine", reset = TRUE, escape = medicine_escape)
-# 
+#
 # # Room 1 answer
 # submit(133.3)
-# 
+#
 # # Room 2 answer
 # submit("high")
-# 
+#
 # # Room 3 answer
 # submit(0.2)
 
