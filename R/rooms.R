@@ -495,7 +495,7 @@ list_escapes <- function() {
       module = "Ecological modelling",
       title = "The Prediction Lantern",
       learning_goal = "Use a fitted model to predict for a new ecological setting.",
-      introduction = "A lantern asks what the model expects at a distance not written in the field notebook.",
+      introduction = "A magical lantern asks what the model expects at a distance not written in the field notebook.",
       challenge = "Fitting a linear model of count as a function of distance_m with survey_counts(), predict count at distance_m = 50 and submit the value rounded to one decimal place.",
       hints = "predict() needs a data frame with a column named exactly like the model predictor.",
       checker = function(answer) .num_equal(answer, 13.9, tolerance = 1e-8),

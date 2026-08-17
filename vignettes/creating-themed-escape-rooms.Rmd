@@ -447,6 +447,10 @@ Package tests belong under `tests/testthat/`. Run them locally with:
 devtools::test()
 ```
 
+If `testthat` is new to you, see the [testthat primer](#appendix-testthat-primer)
+at the end of this vignette. It explains the structure of a test, the main
+expectation functions and their arguments, and how to interpret a failure.
+
 ### 6.5 Render documentation and check the package
 
 Run the full package checks before opening the pull request:
@@ -492,3 +496,171 @@ Write rooms for learners, not for answer keys. A useful room should:
 The ecology rooms bundled with `escapeR` are one theme. The same architecture
 can support other domains, as long as each room remains a small, testable R
 learning step.
+
+## Appendix: a testthat primer {#appendix-testthat-primer}
+
+### What testthat does
+
+`testthat` is an R package for checking automatically that code behaves as
+intended. Each test runs some code and compares the observed result with an
+expected result. A passing test is normally quiet; a failing test identifies
+the expectation that failed, shows the difference when possible, and reports
+the file and line where it occurred.
+
+Tests are useful because a room that works today can be broken accidentally by
+a later change to registration, answer checking, or player progress. Re-running
+the tests checks the old behaviour without requiring someone to play every
+escape manually.
+
+In an R package, test files conventionally live under `tests/testthat/` and
+have names beginning with `test-`, for example:
+
+```text
+tests/testthat/test-room-pack-medicine.R
+```
+
+The package lists `testthat` under `Suggests` in `DESCRIPTION`. The line
+`Config/testthat/edition: 3` tells `testthat` that the package uses its third
+edition of testing behaviour.
+
+### The anatomy of a test
+
+Most tests follow three small steps:
+
+1. **Arrange:** create the objects or state needed by the test.
+2. **Act:** run the code whose behaviour is being tested.
+3. **Assert:** use one or more `expect_*()` functions to state the expected
+   result.
+
+`test_that(description, code)` groups related expectations:
+
+```{r, eval = FALSE}
+test_that("a correct answer advances the player", {
+  # Arrange
+  player <- paste0("medicine_test_", Sys.getpid())
+  medicine_escape <- build_escape("medmini")
+  escape(player = player, reset = TRUE, escape = medicine_escape)
+
+  # Act and assert
+  expect_false(submit(100))
+  expect_true(submit(133.3))
+})
+```
+
+The first argument is a short description of the behaviour. The second is the
+block of R code inside `{}`. If an expectation fails, that description helps
+identify what stopped working.
+
+### Common expectations and their main arguments
+
+An expectation receives the value or expression being checked as its first
+argument. Common expectations include:
+
+- `expect_true(object)` and `expect_false(object)` require `object` to evaluate
+  to exactly `TRUE` or `FALSE`.
+- `expect_equal(object, expected, tolerance = NULL)` compares values while
+  allowing small numerical differences. Use `tolerance` when floating-point
+  calculations need an explicit margin.
+- `expect_identical(object, expected)` is stricter: values must have the same
+  type and attributes as well as the same contents.
+- `expect_length(object, n)` requires an object to have length `n`.
+- `expect_type(object, type)` checks the base type returned by `typeof()`, such
+  as `"double"`, `"integer"`, or `"list"`.
+- `expect_s3_class(object, class)` checks that an object inherits from an S3
+  class.
+- `expect_match(object, regexp)` checks text against a regular expression.
+- `expect_error(object, regexp = NULL)`, `expect_warning()`, and
+  `expect_message()` require an expression to produce the named condition. A
+  `regexp` can also check part of its message.
+- `expect_no_error(object)` requires an expression to finish without an error.
+
+Many expectations also accept `info`, an optional explanatory message added to
+a failure report. It can be helpful when the reason for an expectation is not
+obvious:
+
+```{r, eval = FALSE}
+expect_equal(
+  medicine_escape$room_ids,
+  c("bpmean", "riskcat", "posprop"),
+  info = "The full medicine escape must preserve its teaching order"
+)
+```
+
+Prefer the most specific expectation that expresses the intended behaviour.
+For example, `expect_equal(answer, 4)` usually produces a clearer failure than
+`expect_true(answer == 4)`.
+
+### Testing errors and approximate numbers
+
+To test that invalid input is rejected, put the expression that should fail
+inside `expect_error()`:
+
+```{r, eval = FALSE}
+expect_error(
+  build_escape("unknown_escape"),
+  regexp = "unknown"
+)
+```
+
+The expression is evaluated by the expectation; it is not run beforehand.
+Omitting `regexp` checks only that some error occurs. Including it also checks
+that the message contains the expected text.
+
+Computers sometimes store calculated decimal values with tiny rounding
+differences. In those cases, compare with a tolerance:
+
+```{r, eval = FALSE}
+expect_equal(calculated_proportion, 0.2, tolerance = 1e-8)
+```
+
+Do not use a large tolerance merely to make a test pass: it should reflect the
+precision that the room genuinely promises.
+
+### Running tests
+
+From the package project, the usual command is:
+
+```{r, eval = FALSE}
+devtools::test()
+```
+
+This loads the package's development code and runs the files under
+`tests/testthat/`. During development, `devtools::test(filter = "medicine")`
+can run only test files whose names match `medicine`. The `filter` value matches
+the part after `test-` and before `.R`.
+
+Two lower-level `testthat` functions are also useful:
+
+```{r, eval = FALSE}
+testthat::test_file("tests/testthat/test-room-pack-medicine.R")
+testthat::test_dir("tests/testthat")
+```
+
+`test_file(path)` runs one file, whereas `test_dir(path, filter = NULL)` runs a
+directory of tests and can select matching files with `filter`. Both accept a
+`reporter` argument that controls how results are displayed, but their defaults
+are normally suitable for interactive work.
+
+Before a pull request, use `devtools::check()` as well. It runs a broader R
+package check that includes the tests plus checks of documentation, examples,
+dependencies, and package structure.
+
+### Reading a failure
+
+A failure means that observed behaviour did not match an expectation; it does
+not necessarily mean that the expectation is correct. Read the reported test
+description, file and line, then compare the actual and expected values. Ask:
+
+1. Did the implementation change accidentally?
+2. Is the test using the right setup and player state?
+3. If behaviour changed deliberately, should the test and documentation both
+   be updated?
+
+Do not replace an expected value merely to silence a failure. First establish
+which behaviour the package is meant to guarantee.
+
+For contributed room packs, a useful end-to-end test verifies that the rooms
+and named escapes are registered, confirms their order, starts a uniquely named
+test player, rejects at least one incorrect answer, and accepts every correct
+answer. This exercises the same exported functions that a learner uses and is
+why the example in Step 6 tests more than each room's checker in isolation.
