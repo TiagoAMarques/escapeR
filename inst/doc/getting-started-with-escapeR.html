@@ -342,15 +342,16 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <p><code>escapeR</code> is a small escape-room game for learning R
-through ecological statistics. Each room gives you a story, a task, and
-a lock. You solve the task with ordinary R commands, then submit the
-answer to move to the next room.</p>
+through ecological statistics. Each room gives you a thread of the whole
+story, a task, and a lock. You solve the task with ordinary R commands,
+then submit the answer to move to the next room.</p>
 <p>The bundled quest starts with R foundations and moves through data
 import, visualisation, data manipulation, simple ecological modelling,
 distance-sampling ideas, and reproducible workflows.</p>
 <div id="start-your-first-quest" class="section level2">
 <h2>Start your first quest</h2>
-<p>Load the package and call <code>escape()</code>:</p>
+<p>To start playing you simply need to load the package and call
+<code>escape()</code>:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(escapeR)</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">escape</span>()</span></code></pre></div>
 <p>In an interactive R session, <code>escape()</code> asks for your
@@ -377,7 +378,8 @@ current lock:</p>
 <p>If the answer is correct, <code>escapeR</code> shows the success
 message and moves you to the next room. If the answer is not correct,
 the room remains locked and you can try again.</p>
-<p>Text answers can be submitted as character strings:</p>
+<p>While numeric answers are submitted as is, text answers should be
+submitted as character strings:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">submit</span>(<span class="st">&quot;negative&quot;</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">submit</span>(<span class="st">&quot;.qmd&quot;</span>)</span></code></pre></div>
 <p>For simple text locks, <code>escapeR</code> ignores leading and
@@ -409,9 +411,9 @@ current room again, so you can reread the task and learning goal.</p>
 <h2>Check your status</h2>
 <p>Use <code>status()</code> to see where you are:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">status</span>()</span></code></pre></div>
-<p>This tells you the active player, how many rooms have been solved,
-and which room is current. It is useful during longer activities or when
-returning to the game after a break.</p>
+<p>This tells you the active player, how many rooms have been solved out
+of those in the game, and which room is current. It is useful during
+longer activities or when returning to the game after a break.</p>
 </div>
 <div id="resume-later" class="section level2">
 <h2>Resume later</h2>
@@ -433,27 +435,42 @@ current room. If no saved progress exists, a new quest starts.</p>
 <p>Or start again directly with <code>escape(reset = TRUE)</code>:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">escape</span>(<span class="at">player =</span> <span class="st">&quot;ana&quot;</span>, <span class="at">reset =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p>Use resetting with care in class: it deliberately starts that
-player’s progress again from room 1.</p>
+player’s progress again from room 1, so all previous progress is
+lost.</p>
 </div>
 <div id="find-the-bundled-data-files" class="section level2">
 <h2>Find the bundled data files</h2>
 <p>Several rooms ask you to read or inspect files included with the
-package. Use <code>escapeR_file()</code> to find them:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">escapeR_file</span>(<span class="st">&quot;dados1.csv&quot;</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;C:/Users/tiago/AppData/Local/R/win-library/4.6/escapeR/extdata/dados1.csv&quot;</span></span></code></pre></div>
-<p>For example, a room might ask you to read a CSV file:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">escapeR_file</span>(<span class="st">&quot;dados1.csv&quot;</span>))</span>
-<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">nrow</span>(d)</span></code></pre></div>
-<p>The package also provides a small survey data set:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">survey_counts</span>())</span>
-<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="co">#&gt;   site habitat count distance_m detected</span></span>
-<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">#&gt; 1   S1  forest    12         15     TRUE</span></span>
-<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co">#&gt; 2   S2  forest    15         40     TRUE</span></span>
-<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="co">#&gt; 3   S3  forest    11         70     TRUE</span></span>
-<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="co">#&gt; 4   S4  forest    14         95    FALSE</span></span>
-<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co">#&gt; 5   S5   scrub     6         20     TRUE</span></span>
-<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co">#&gt; 6   S6   scrub     9         55     TRUE</span></span></code></pre></div>
-<p>This data set appears in several rooms about data quality, summaries,
+package. Use <code>escapeR_file()</code> to find them. As an example, if
+a data file was called “dataX.csv” you would use</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">escapeR_file</span>(<span class="st">&quot;dataX.csv&quot;</span>)</span></code></pre></div>
+<p>For example, a room might ask you to read a CSV file and then inspect
+it. One option would then be</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">escapeR_file</span>(<span class="st">&quot;dataX.csv&quot;</span>))</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">head</span>(d)</span></code></pre></div>
+<p>The package also provides a separate, small survey data set.
+<code>survey_counts()</code> returns this data frame directly; it does
+not read or modify <code>dados1.csv</code>. Store the returned data
+frame in an object before working with it:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>survey <span class="ot">&lt;-</span> <span class="fu">survey_counts</span>()</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="fu">names</span>(survey)</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">#&gt; [1] &quot;site&quot;       &quot;habitat&quot;    &quot;count&quot;      &quot;distance_m&quot; &quot;detected&quot;</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="fu">head</span>(survey)</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="co">#&gt;   site habitat count distance_m detected</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="co">#&gt; 1   S1  forest    12         15     TRUE</span></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co">#&gt; 2   S2  forest    15         40     TRUE</span></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co">#&gt; 3   S3  forest    11         70     TRUE</span></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co">#&gt; 4   S4  forest    14         95    FALSE</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="co">#&gt; 5   S5   scrub     6         20     TRUE</span></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a><span class="co">#&gt; 6   S6   scrub     9         55     TRUE</span></span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(survey))</span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span></code></pre></div>
+<p>It has five named columns (<code>site</code>, <code>habitat</code>,
+<code>count</code>, <code>distance_m</code>, and <code>detected</code>).
+Two values in <code>count</code> are <code>NA</code>, included
+deliberately for the data quality exercise. By contrast,
+<code>dados1.csv</code> has four columns and no missing values. The
+survey data set appears in several rooms about data quality, summaries,
 modelling, and distance sampling.</p>
 </div>
 <div id="see-available-rooms" class="section level2">
@@ -480,33 +497,44 @@ sequence:</p>
 <span id="cb16-18"><a href="#cb16-18" tabindex="-1"></a><span class="co">#&gt; detect     16   detect          Distance sampling    The Detection Counter</span></span>
 <span id="cb16-19"><a href="#cb16-19" tabindex="-1"></a><span class="co">#&gt; trunc      17    trunc          Distance sampling      The Truncation Gate</span></span>
 <span id="cb16-20"><a href="#cb16-20" tabindex="-1"></a><span class="co">#&gt; comment    18  comment      Reproducible workflow       The Comment Cipher</span></span>
-<span id="cb16-21"><a href="#cb16-21" tabindex="-1"></a><span class="co">#&gt; quarto     19   quarto      Reproducible workflow          The Quarto Exit</span></span>
-<span id="cb16-22"><a href="#cb16-22" tabindex="-1"></a><span class="co">#&gt;                                                                  learning_goal</span></span>
-<span id="cb16-23"><a href="#cb16-23" tabindex="-1"></a><span class="co">#&gt; console                      Use R as a calculator and learn expression order.</span></span>
-<span id="cb16-24"><a href="#cb16-24" tabindex="-1"></a><span class="co">#&gt; vector                       Create vectors and summarize them with functions.</span></span>
-<span id="cb16-25"><a href="#cb16-25" tabindex="-1"></a><span class="co">#&gt; finddata                                 Find and inspect built-in R datasets.</span></span>
-<span id="cb16-26"><a href="#cb16-26" tabindex="-1"></a><span class="co">#&gt; datatab                                       Read and inspect a CSV data set.</span></span>
-<span id="cb16-27"><a href="#cb16-27" tabindex="-1"></a><span class="co">#&gt; columns                                    Identify variables in a data frame.</span></span>
-<span id="cb16-28"><a href="#cb16-28" tabindex="-1"></a><span class="co">#&gt; missing                                    Check data quality before analysis.</span></span>
-<span id="cb16-29"><a href="#cb16-29" tabindex="-1"></a><span class="co">#&gt; plotwin                           Make a basic plot and read a visual pattern.</span></span>
-<span id="cb16-30"><a href="#cb16-30" tabindex="-1"></a><span class="co">#&gt; habitat         Use tables to summarize categorical variables before plotting.</span></span>
-<span id="cb16-31"><a href="#cb16-31" tabindex="-1"></a><span class="co">#&gt; hidden   Discover that plotted data can reveal structure hidden in plain text.</span></span>
-<span id="cb16-32"><a href="#cb16-32" tabindex="-1"></a><span class="co">#&gt; subset                            Subset data frames using logical conditions.</span></span>
-<span id="cb16-33"><a href="#cb16-33" tabindex="-1"></a><span class="co">#&gt; sorting                           Order data and inspect extreme observations.</span></span>
-<span id="cb16-34"><a href="#cb16-34" tabindex="-1"></a><span class="co">#&gt; model                                 Fit and interpret a simple linear model.</span></span>
-<span id="cb16-35"><a href="#cb16-35" tabindex="-1"></a><span class="co">#&gt; resid                  Understand that fitted models leave residual variation.</span></span>
-<span id="cb16-36"><a href="#cb16-36" tabindex="-1"></a><span class="co">#&gt; predict            Use a fitted model to predict for a new ecological setting.</span></span>
-<span id="cb16-37"><a href="#cb16-37" tabindex="-1"></a><span class="co">#&gt; detectp             Connect observed data to an imperfect observation process.</span></span>
-<span id="cb16-38"><a href="#cb16-38" tabindex="-1"></a><span class="co">#&gt; detect                              Summarize detections as observed outcomes.</span></span>
-<span id="cb16-39"><a href="#cb16-39" tabindex="-1"></a><span class="co">#&gt; trunc                  Think about distance cutoffs and retained observations.</span></span>
-<span id="cb16-40"><a href="#cb16-40" tabindex="-1"></a><span class="co">#&gt; comment                         Recognize comments as part of readable R code.</span></span>
-<span id="cb16-41"><a href="#cb16-41" tabindex="-1"></a><span class="co">#&gt; quarto        Recognize reproducible reports as part of the analysis workflow.</span></span></code></pre></div>
+<span id="cb16-21"><a href="#cb16-21" tabindex="-1"></a><span class="co">#&gt; webglm     19   webglm      Reproducible workflow       The Web Data Model</span></span>
+<span id="cb16-22"><a href="#cb16-22" tabindex="-1"></a><span class="co">#&gt; quarto     20   quarto      Reproducible workflow          The Quarto Exit</span></span>
+<span id="cb16-23"><a href="#cb16-23" tabindex="-1"></a><span class="co">#&gt; bpmean     21   bpmean                   Medicine        The Clinic Intake</span></span>
+<span id="cb16-24"><a href="#cb16-24" tabindex="-1"></a><span class="co">#&gt; posprop    22  posprop                   Medicine    The Test Result Board</span></span>
+<span id="cb16-25"><a href="#cb16-25" tabindex="-1"></a><span class="co">#&gt; riskcat    23  riskcat                   Medicine           The Risk Label</span></span>
+<span id="cb16-26"><a href="#cb16-26" tabindex="-1"></a><span class="co">#&gt;                                                                  learning_goal</span></span>
+<span id="cb16-27"><a href="#cb16-27" tabindex="-1"></a><span class="co">#&gt; console                      Use R as a calculator and learn expression order.</span></span>
+<span id="cb16-28"><a href="#cb16-28" tabindex="-1"></a><span class="co">#&gt; vector                       Create vectors and summarize them with functions.</span></span>
+<span id="cb16-29"><a href="#cb16-29" tabindex="-1"></a><span class="co">#&gt; finddata                                 Find and inspect built-in R datasets.</span></span>
+<span id="cb16-30"><a href="#cb16-30" tabindex="-1"></a><span class="co">#&gt; datatab                                       Read and inspect a CSV data set.</span></span>
+<span id="cb16-31"><a href="#cb16-31" tabindex="-1"></a><span class="co">#&gt; columns                                    Identify variables in a data frame.</span></span>
+<span id="cb16-32"><a href="#cb16-32" tabindex="-1"></a><span class="co">#&gt; missing                                    Check data quality before analysis.</span></span>
+<span id="cb16-33"><a href="#cb16-33" tabindex="-1"></a><span class="co">#&gt; plotwin                           Make a basic plot and read a visual pattern.</span></span>
+<span id="cb16-34"><a href="#cb16-34" tabindex="-1"></a><span class="co">#&gt; habitat         Use tables to summarize categorical variables before plotting.</span></span>
+<span id="cb16-35"><a href="#cb16-35" tabindex="-1"></a><span class="co">#&gt; hidden   Discover that plotted data can reveal structure hidden in plain text.</span></span>
+<span id="cb16-36"><a href="#cb16-36" tabindex="-1"></a><span class="co">#&gt; subset                            Subset data frames using logical conditions.</span></span>
+<span id="cb16-37"><a href="#cb16-37" tabindex="-1"></a><span class="co">#&gt; sorting                           Order data and inspect extreme observations.</span></span>
+<span id="cb16-38"><a href="#cb16-38" tabindex="-1"></a><span class="co">#&gt; model                                 Fit and interpret a simple linear model.</span></span>
+<span id="cb16-39"><a href="#cb16-39" tabindex="-1"></a><span class="co">#&gt; resid                  Understand that fitted models leave residual variation.</span></span>
+<span id="cb16-40"><a href="#cb16-40" tabindex="-1"></a><span class="co">#&gt; predict            Use a fitted model to predict for a new ecological setting.</span></span>
+<span id="cb16-41"><a href="#cb16-41" tabindex="-1"></a><span class="co">#&gt; detectp             Connect observed data to an imperfect observation process.</span></span>
+<span id="cb16-42"><a href="#cb16-42" tabindex="-1"></a><span class="co">#&gt; detect                              Summarize detections as observed outcomes.</span></span>
+<span id="cb16-43"><a href="#cb16-43" tabindex="-1"></a><span class="co">#&gt; trunc                  Think about distance cutoffs and retained observations.</span></span>
+<span id="cb16-44"><a href="#cb16-44" tabindex="-1"></a><span class="co">#&gt; comment                         Recognize comments as part of readable R code.</span></span>
+<span id="cb16-45"><a href="#cb16-45" tabindex="-1"></a><span class="co">#&gt; webglm                        Read data from a web link and fit a Poisson GLM.</span></span>
+<span id="cb16-46"><a href="#cb16-46" tabindex="-1"></a><span class="co">#&gt; quarto        Recognize reproducible reports as part of the analysis workflow.</span></span>
+<span id="cb16-47"><a href="#cb16-47" tabindex="-1"></a><span class="co">#&gt; bpmean                         Create a numeric vector and calculate its mean.</span></span>
+<span id="cb16-48"><a href="#cb16-48" tabindex="-1"></a><span class="co">#&gt; posprop                                    Calculate a proportion from counts.</span></span>
+<span id="cb16-49"><a href="#cb16-49" tabindex="-1"></a><span class="co">#&gt; riskcat                          Use a logical comparison to classify a value.</span></span></code></pre></div>
 <p>The <code>id</code> column is useful when building a shorter custom
-quest.</p>
+quest, where you can provide a list of rooms to be played as a separate
+quest. See next section and the corresponding dedicated vignette for
+details on how to create new rooms and quests.</p>
 </div>
 <div id="play-a-shorter-or-custom-quest" class="section level2">
 <h2>Play a shorter or custom quest</h2>
-<p>Instructors can build a quest from selected room IDs:</p>
+<p>Instructors can build a quest from selected room IDs, as an example
+here, a mini 3-room quest:</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>short_quest <span class="ot">&lt;-</span> <span class="fu">build_escape</span>(<span class="fu">c</span>(<span class="st">&quot;console&quot;</span>, <span class="st">&quot;vector&quot;</span>, <span class="st">&quot;plotwin&quot;</span>))</span>
 <span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="fu">escape</span>(<span class="at">player =</span> <span class="st">&quot;demo_short&quot;</span>, <span class="at">reset =</span> <span class="cn">TRUE</span>, <span class="at">escape =</span> short_quest)</span></code></pre></div>
 <p>The same <code>escape()</code> command starts the custom sequence.
@@ -515,8 +543,9 @@ escape sequence created with <code>build_escape()</code>.</p>
 <p>If room packs have been registered, <code>list_escapes()</code> shows
 named sequences:</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">list_escapes</span>()</span>
-<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="co">#&gt; [1] id      pack_id rooms  </span></span>
-<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="co">#&gt; &lt;0 rows&gt; (or 0-length row.names)</span></span></code></pre></div>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="co">#&gt;              id pack_id                    rooms</span></span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="co">#&gt; medmini medmini medpack          bpmean, riskcat</span></span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="co">#&gt; medfull medfull medpack bpmean, riskcat, posprop</span></span></code></pre></div>
 <p>Those named sequences can also be passed to
 <code>build_escape()</code>.</p>
 </div>
@@ -531,7 +560,7 @@ named sequences:</p>
 <span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="fu">reset_game</span>()   <span class="co"># restart the active quest</span></span>
 <span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a><span class="fu">list_rooms</span>()   <span class="co"># inspect available rooms</span></span></code></pre></div>
 <p>The most important habit is to solve the room in ordinary R first.
-The game is the lock; R is the key.</p>
+The game is the lock; R is the key. Can you get out?</p>
 </div>
 
 

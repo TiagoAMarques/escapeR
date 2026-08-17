@@ -342,20 +342,25 @@ escapeR</h1>
 
 
 
-<p><code>escapeR</code> was first created inside an Ecological
-Statistics course. The bundled rooms therefore use ecological examples:
-field counts, survey data, detection, modelling, and reproducible
-reporting. The package architecture is more general than that, however.
-An escape room is just a sequence of small tasks where students use R to
-unlock the next step.</p>
+<p><code>escapeR</code> was first created for an Ecological Statistics
+course. The bundled rooms therefore use ecological examples: field
+counts, survey data, detection, modelling, and reproducible reporting.
+The package architecture is more general than that, however. An escape
+room is just a sequence of small tasks where students use R to unlock
+the next step.</p>
 <p>This vignette explains how to create rooms in any theme, such as
 medicine, agriculture, social sciences, economics, psychology, or
 environmental policy. It also shows how to bundle those rooms into a
 shareable room pack that can be submitted to the <code>escapeR</code>
 GitHub repository.</p>
+<p>New rooms and quests are welcome. To contribute them to
+<code>escapeR</code>, submit a GitHub pull request containing the
+room-pack definition, its registration entry, tests, and any data files
+it needs. The complete process is described below.</p>
 <div id="the-room-architecture" class="section level2">
 <h2>The room architecture</h2>
-<p>Every room is built from separate components:</p>
+<p>Every room is built from eleven components, although some are
+optional:</p>
 <ul>
 <li><code>id</code>: a short unique identifier, at most 8 characters,
 such as <code>&quot;bpmean&quot;</code> or <code>&quot;yield&quot;</code>.</li>
@@ -375,12 +380,13 @@ answer checking.</li>
 <li><code>failure</code>: an optional message shown after a wrong
 answer.</li>
 </ul>
-<p>Most beginner rooms only need <code>correct_result</code>. For
-example, if the correct answer is <code>130</code>, <code>escapeR</code>
-checks numeric submissions with a small tolerance. If the correct answer
-is <code>&quot;high&quot;</code>, <code>escapeR</code> checks text after trimming
-spaces and ignoring case. Use <code>checker</code> when you need more
-control.</p>
+<p>Most beginner rooms only need a simple <code>correct_result</code>.
+For example, if the correct answer is <code>130</code>,
+<code>escapeR</code> checks numeric submissions with a small tolerance.
+If the correct answer is <code>&quot;high&quot;</code>, <code>escapeR</code>
+checks text after trimming spaces and ignoring case. Use
+<code>checker</code> instead of <code>correct_result</code> when you
+need more control.</p>
 </div>
 <div id="step-1-choose-a-theme" class="section level2">
 <h2>Step 1: choose a theme</h2>
@@ -417,16 +423,16 @@ third asks for a simple proportion.</p>
 <span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>    <span class="st">&quot;three patients seen before lunch.&quot;</span></span>
 <span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>  ),</span>
 <span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>  <span class="at">challenge =</span> <span class="fu">paste</span>(</span>
-<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>    <span class="st">&quot;Create a vector with the values 120, 130, and 140.&quot;</span>,</span>
-<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>    <span class="st">&quot;What is the average systolic blood pressure? Submit the mean.&quot;</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>    <span class="st">&quot;Create a vector with the values 120, 124, 111, 182, 130, and 145.&quot;</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>    <span class="st">&quot;What is the average systolic blood pressure? Submit the mean, rounded to 1 decimal.&quot;</span></span>
 <span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>  ),</span>
 <span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>  <span class="at">hints =</span> <span class="fu">c</span>(</span>
-<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>    <span class="st">&quot;Use c() to combine the three readings into one vector.&quot;</span>,</span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>    <span class="st">&quot;Use c() to combine multiple readings into one vector.&quot;</span>,</span>
 <span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>    <span class="st">&quot;Use mean() to calculate the average of a numeric vector.&quot;</span></span>
 <span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>  ),</span>
-<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>  <span class="at">correct_result =</span> <span class="dv">130</span>,</span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>  <span class="at">correct_result =</span> <span class="fl">133.3</span>,</span>
 <span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>  <span class="at">success =</span> <span class="st">&quot;The intake sheet is complete, and the first cabinet opens.&quot;</span>,</span>
-<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>  <span class="at">failure =</span> <span class="st">&quot;Not quite. Check that all three readings are included before taking the mean.&quot;</span></span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>  <span class="at">failure =</span> <span class="st">&quot;Not quite, young doctor. Check that all readings are included before taking the mean.&quot;</span></span>
 <span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>)</span>
 <span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a></span>
 <span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a>riskcat <span class="ot">&lt;-</span> <span class="fu">new_room</span>(</span>
@@ -467,10 +473,11 @@ third asks for a simple proportion.</p>
 <span id="cb1-60"><a href="#cb1-60" tabindex="-1"></a>  <span class="at">correct_result =</span> <span class="fl">0.2</span>,</span>
 <span id="cb1-61"><a href="#cb1-61" tabindex="-1"></a>  <span class="at">success =</span> <span class="st">&quot;The board accepts the proportion, and the ward door opens.&quot;</span></span>
 <span id="cb1-62"><a href="#cb1-62" tabindex="-1"></a>)</span></code></pre></div>
-<p>Notice that each room is self-contained. The student sees the
-introduction and challenge, but the correct result and hints are stored
-separately. This makes rooms easier to review, edit, translate, and
-reuse.</p>
+<p>Notice that each authoring object is self-contained. It contains
+everything needed to review, edit, translate, and reuse the room. During
+play, <code>escapeR</code> exposes the introduction, challenge, learning
+goal, and hints, but keeps the correct result and checker out of the
+playable room object.</p>
 </div>
 <div id="step-3-bundle-rooms-into-a-pack" class="section level2">
 <h2>Step 3: bundle rooms into a pack</h2>
@@ -496,78 +503,83 @@ uses all three rooms.</p>
 </div>
 <div id="step-4-test-locally" class="section level2">
 <h2>Step 4: test locally</h2>
-<p>Register the pack in your R session, inspect the rooms and escape
-sequences, and then start a test game.</p>
+<p>Before submitting a pull request, register the pack in your R
+session, inspect the rooms and escape sequences, and then start a test
+game.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">register_room_pack</span>(medicine_pack, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">list_rooms</span>()</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt;         room      id                     module                    title</span></span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; console    1 console              R foundations         The Console Door</span></span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; vector     2  vector              R foundations       The Vector Cabinet</span></span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; naming     3  naming              R foundations         The Naming Shelf</span></span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; datatab    4 datatab Data import and inspection     The Data Table Hatch</span></span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt; columns    5 columns Data import and inspection       The Column Scanner</span></span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt; missing    6 missing Data import and inspection The Missing Value Mirror</span></span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; plotwin    7 plotwin              Visualisation      The Plotting Window</span></span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; habitat    8 habitat              Visualisation       The Habitat Mosaic</span></span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; hidden     9  hidden              Visualisation          The Hidden Data</span></span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt; subset    10  subset          Data manipulation      The Subsetting Lock</span></span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; sorting   11 sorting          Data manipulation    The Sorting Staircase</span></span>
-<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt; model     12   model       Ecological modelling           The Model Room</span></span>
-<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt; resid     13   resid       Ecological modelling      The Residual Drawer</span></span>
-<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt; predict   14 predict       Ecological modelling   The Prediction Lantern</span></span>
-<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt; detectp   15 detectp          Distance sampling   The Observation Filter</span></span>
-<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt; detect    16  detect          Distance sampling    The Detection Counter</span></span>
-<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt; trunc     17   trunc          Distance sampling      The Truncation Gate</span></span>
-<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt; comment   18 comment      Reproducible workflow       The Comment Cipher</span></span>
-<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt; quarto    19  quarto      Reproducible workflow          The Quarto Exit</span></span>
-<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt; bpmean    20  bpmean                   Medicine        The Clinic Intake</span></span>
-<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt; posprop   21 posprop                   Medicine    The Test Result Board</span></span>
-<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt; riskcat   22 riskcat                   Medicine           The Risk Label</span></span>
-<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="co">#&gt;                                                                 learning_goal</span></span>
-<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="co">#&gt; console                     Use R as a calculator and learn expression order.</span></span>
-<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a><span class="co">#&gt; vector                      Create vectors and summarize them with functions.</span></span>
-<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a><span class="co">#&gt; naming                        Store values in objects and inspect them later.</span></span>
-<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a><span class="co">#&gt; datatab                                      Read and inspect a CSV data set.</span></span>
-<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a><span class="co">#&gt; columns                                   Identify variables in a data frame.</span></span>
-<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a><span class="co">#&gt; missing                                   Check data quality before analysis.</span></span>
-<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a><span class="co">#&gt; plotwin                          Make a basic plot and read a visual pattern.</span></span>
-<span id="cb3-35"><a href="#cb3-35" tabindex="-1"></a><span class="co">#&gt; habitat        Use tables to summarize categorical variables before plotting.</span></span>
-<span id="cb3-36"><a href="#cb3-36" tabindex="-1"></a><span class="co">#&gt; hidden  Discover that plotted data can reveal structure hidden in plain text.</span></span>
-<span id="cb3-37"><a href="#cb3-37" tabindex="-1"></a><span class="co">#&gt; subset                           Subset data frames using logical conditions.</span></span>
-<span id="cb3-38"><a href="#cb3-38" tabindex="-1"></a><span class="co">#&gt; sorting                          Order data and inspect extreme observations.</span></span>
-<span id="cb3-39"><a href="#cb3-39" tabindex="-1"></a><span class="co">#&gt; model                                Fit and interpret a simple linear model.</span></span>
-<span id="cb3-40"><a href="#cb3-40" tabindex="-1"></a><span class="co">#&gt; resid                 Understand that fitted models leave residual variation.</span></span>
-<span id="cb3-41"><a href="#cb3-41" tabindex="-1"></a><span class="co">#&gt; predict           Use a fitted model to predict for a new ecological setting.</span></span>
-<span id="cb3-42"><a href="#cb3-42" tabindex="-1"></a><span class="co">#&gt; detectp            Connect observed data to an imperfect observation process.</span></span>
-<span id="cb3-43"><a href="#cb3-43" tabindex="-1"></a><span class="co">#&gt; detect                             Summarize detections as observed outcomes.</span></span>
-<span id="cb3-44"><a href="#cb3-44" tabindex="-1"></a><span class="co">#&gt; trunc                 Think about distance cutoffs and retained observations.</span></span>
-<span id="cb3-45"><a href="#cb3-45" tabindex="-1"></a><span class="co">#&gt; comment                        Recognize comments as part of readable R code.</span></span>
-<span id="cb3-46"><a href="#cb3-46" tabindex="-1"></a><span class="co">#&gt; quarto       Recognize reproducible reports as part of the analysis workflow.</span></span>
-<span id="cb3-47"><a href="#cb3-47" tabindex="-1"></a><span class="co">#&gt; bpmean                        Create a numeric vector and calculate its mean.</span></span>
-<span id="cb3-48"><a href="#cb3-48" tabindex="-1"></a><span class="co">#&gt; posprop                                   Calculate a proportion from counts.</span></span>
-<span id="cb3-49"><a href="#cb3-49" tabindex="-1"></a><span class="co">#&gt; riskcat                         Use a logical comparison to classify a value.</span></span>
-<span id="cb3-50"><a href="#cb3-50" tabindex="-1"></a><span class="fu">list_escapes</span>()</span>
-<span id="cb3-51"><a href="#cb3-51" tabindex="-1"></a><span class="co">#&gt;              id pack_id                    rooms</span></span>
-<span id="cb3-52"><a href="#cb3-52" tabindex="-1"></a><span class="co">#&gt; medmini medmini medpack          bpmean, riskcat</span></span>
-<span id="cb3-53"><a href="#cb3-53" tabindex="-1"></a><span class="co">#&gt; medfull medfull medpack bpmean, riskcat, posprop</span></span>
-<span id="cb3-54"><a href="#cb3-54" tabindex="-1"></a></span>
-<span id="cb3-55"><a href="#cb3-55" tabindex="-1"></a>medicine_escape <span class="ot">&lt;-</span> <span class="fu">build_escape</span>(<span class="st">&quot;medfull&quot;</span>)</span>
-<span id="cb3-56"><a href="#cb3-56" tabindex="-1"></a>medicine_escape<span class="sc">$</span>room_ids</span>
-<span id="cb3-57"><a href="#cb3-57" tabindex="-1"></a><span class="co">#&gt; [1] &quot;bpmean&quot;  &quot;riskcat&quot; &quot;posprop&quot;</span></span></code></pre></div>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt;          room       id                     module                    title</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; console     1  console              R foundations         The Console Door</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; vector      2   vector              R foundations       The Vector Cabinet</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; finddata    3 finddata Data import and inspection             Finding Data</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; datatab     4  datatab Data import and inspection     The Data Table Hatch</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt; columns     5  columns Data import and inspection       The Column Scanner</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt; missing     6  missing Data import and inspection The Missing Value Mirror</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; plotwin     7  plotwin              Visualisation      The Plotting Window</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; habitat     8  habitat              Visualisation       The Habitat Mosaic</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; hidden      9   hidden              Visualisation          The Hidden Data</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt; subset     10   subset          Data manipulation      The Subsetting Lock</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; sorting    11  sorting          Data manipulation    The Sorting Staircase</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt; model      12    model       Ecological modelling           The Model Room</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt; resid      13    resid       Ecological modelling      The Residual Drawer</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt; predict    14  predict       Ecological modelling   The Prediction Lantern</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt; detectp    15  detectp          Distance sampling   The Observation Filter</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt; detect     16   detect          Distance sampling    The Detection Counter</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt; trunc      17    trunc          Distance sampling      The Truncation Gate</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt; comment    18  comment      Reproducible workflow       The Comment Cipher</span></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt; webglm     19   webglm      Reproducible workflow       The Web Data Model</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt; quarto     20   quarto      Reproducible workflow          The Quarto Exit</span></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt; bpmean     21   bpmean                   Medicine        The Clinic Intake</span></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt; posprop    22  posprop                   Medicine    The Test Result Board</span></span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="co">#&gt; riskcat    23  riskcat                   Medicine           The Risk Label</span></span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="co">#&gt;                                                                  learning_goal</span></span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a><span class="co">#&gt; console                      Use R as a calculator and learn expression order.</span></span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a><span class="co">#&gt; vector                       Create vectors and summarize them with functions.</span></span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a><span class="co">#&gt; finddata                                 Find and inspect built-in R datasets.</span></span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a><span class="co">#&gt; datatab                                       Read and inspect a CSV data set.</span></span>
+<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a><span class="co">#&gt; columns                                    Identify variables in a data frame.</span></span>
+<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a><span class="co">#&gt; missing                                    Check data quality before analysis.</span></span>
+<span id="cb3-35"><a href="#cb3-35" tabindex="-1"></a><span class="co">#&gt; plotwin                           Make a basic plot and read a visual pattern.</span></span>
+<span id="cb3-36"><a href="#cb3-36" tabindex="-1"></a><span class="co">#&gt; habitat         Use tables to summarize categorical variables before plotting.</span></span>
+<span id="cb3-37"><a href="#cb3-37" tabindex="-1"></a><span class="co">#&gt; hidden   Discover that plotted data can reveal structure hidden in plain text.</span></span>
+<span id="cb3-38"><a href="#cb3-38" tabindex="-1"></a><span class="co">#&gt; subset                            Subset data frames using logical conditions.</span></span>
+<span id="cb3-39"><a href="#cb3-39" tabindex="-1"></a><span class="co">#&gt; sorting                           Order data and inspect extreme observations.</span></span>
+<span id="cb3-40"><a href="#cb3-40" tabindex="-1"></a><span class="co">#&gt; model                                 Fit and interpret a simple linear model.</span></span>
+<span id="cb3-41"><a href="#cb3-41" tabindex="-1"></a><span class="co">#&gt; resid                  Understand that fitted models leave residual variation.</span></span>
+<span id="cb3-42"><a href="#cb3-42" tabindex="-1"></a><span class="co">#&gt; predict            Use a fitted model to predict for a new ecological setting.</span></span>
+<span id="cb3-43"><a href="#cb3-43" tabindex="-1"></a><span class="co">#&gt; detectp             Connect observed data to an imperfect observation process.</span></span>
+<span id="cb3-44"><a href="#cb3-44" tabindex="-1"></a><span class="co">#&gt; detect                              Summarize detections as observed outcomes.</span></span>
+<span id="cb3-45"><a href="#cb3-45" tabindex="-1"></a><span class="co">#&gt; trunc                  Think about distance cutoffs and retained observations.</span></span>
+<span id="cb3-46"><a href="#cb3-46" tabindex="-1"></a><span class="co">#&gt; comment                         Recognize comments as part of readable R code.</span></span>
+<span id="cb3-47"><a href="#cb3-47" tabindex="-1"></a><span class="co">#&gt; webglm                        Read data from a web link and fit a Poisson GLM.</span></span>
+<span id="cb3-48"><a href="#cb3-48" tabindex="-1"></a><span class="co">#&gt; quarto        Recognize reproducible reports as part of the analysis workflow.</span></span>
+<span id="cb3-49"><a href="#cb3-49" tabindex="-1"></a><span class="co">#&gt; bpmean                         Create a numeric vector and calculate its mean.</span></span>
+<span id="cb3-50"><a href="#cb3-50" tabindex="-1"></a><span class="co">#&gt; posprop                                    Calculate a proportion from counts.</span></span>
+<span id="cb3-51"><a href="#cb3-51" tabindex="-1"></a><span class="co">#&gt; riskcat                          Use a logical comparison to classify a value.</span></span>
+<span id="cb3-52"><a href="#cb3-52" tabindex="-1"></a><span class="fu">list_escapes</span>()</span>
+<span id="cb3-53"><a href="#cb3-53" tabindex="-1"></a><span class="co">#&gt;              id pack_id                    rooms</span></span>
+<span id="cb3-54"><a href="#cb3-54" tabindex="-1"></a><span class="co">#&gt; medmini medmini medpack          bpmean, riskcat</span></span>
+<span id="cb3-55"><a href="#cb3-55" tabindex="-1"></a><span class="co">#&gt; medfull medfull medpack bpmean, riskcat, posprop</span></span>
+<span id="cb3-56"><a href="#cb3-56" tabindex="-1"></a></span>
+<span id="cb3-57"><a href="#cb3-57" tabindex="-1"></a>medicine_escape <span class="ot">&lt;-</span> <span class="fu">build_escape</span>(<span class="st">&quot;medfull&quot;</span>)</span>
+<span id="cb3-58"><a href="#cb3-58" tabindex="-1"></a>medicine_escape<span class="sc">$</span>room_ids</span>
+<span id="cb3-59"><a href="#cb3-59" tabindex="-1"></a><span class="co">#&gt; [1] &quot;bpmean&quot;  &quot;riskcat&quot; &quot;posprop&quot;</span></span></code></pre></div>
 <p>To play it interactively:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">escape</span>(<span class="at">player =</span> <span class="st">&quot;demo_medicine&quot;</span>, <span class="at">reset =</span> <span class="cn">TRUE</span>, <span class="at">escape =</span> medicine_escape)</span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co"># Room 1 answer</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="fu">submit</span>(<span class="dv">130</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="fu">submit</span>(<span class="fl">133.3</span>)</span>
 <span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a></span>
 <span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co"># Room 2 answer</span></span>
 <span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="fu">submit</span>(<span class="st">&quot;high&quot;</span>)</span>
 <span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a></span>
 <span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co"># Room 3 answer</span></span>
 <span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="fu">submit</span>(<span class="fl">0.2</span>)</span></code></pre></div>
-<p>When developing a pack, test wrong answers as well. Good failure
-messages help students recover without giving away the whole
+<p>When developing a pack, test wrong answers as well as correct ones.
+Where relevant, try numeric values, text, and the kinds of R objects
+your checker is designed to accept. Good failure messages help students
+recover and may offer a small nudge without giving away the
 solution.</p>
 </div>
 <div id="step-5-use-a-custom-checker-when-needed" class="section level2">
@@ -599,14 +611,22 @@ social-science room might accept <code>&quot;increase&quot;</code>,
 </div>
 <div id="step-6-prepare-a-github-contribution" class="section level2">
 <h2>Step 6: prepare a GitHub contribution</h2>
-<p>To submit rooms for integration into <code>escapeR</code>, place the
-room pack in a single R file. A good file name uses the pack theme, for
-example:</p>
-<pre class="text"><code>R/room_pack_medicine.R
-R/room_pack_agriculture.R
-R/room_pack_social.R</code></pre>
-<p>The file should define one function that returns the pack. For the
-medicine example, the submitted file would look like this:</p>
+<p>An accepted contribution must do more than define a pack: it must
+also add the pack to the package catalogue and test the student-facing
+submission path. The steps below describe the complete route from a
+local room pack to rooms and named escapes that are available
+immediately after <code>library(escapeR)</code>.</p>
+<div id="add-the-room-pack-factory" class="section level3">
+<h3>6.1 Add the room-pack factory</h3>
+<p>Place the pack in a single R source file. A good file name uses the
+pack theme, for example:</p>
+<pre class="text"><code>R/room-pack-medicine.R
+R/room-pack-agriculture.R
+R/room-pack-social.R</code></pre>
+<p>The file should define one function that takes no arguments and
+returns the pack. The function is an internal package factory, so it
+does not need to be exported. For the medicine example, the submitted
+file would look like this:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>medicine_room_pack <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
 <span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  bpmean <span class="ot">&lt;-</span> <span class="fu">new_room</span>(</span>
 <span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>    <span class="at">id =</span> <span class="st">&quot;bpmean&quot;</span>,</span>
@@ -615,19 +635,19 @@ medicine example, the submitted file would look like this:</p>
 <span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>    <span class="at">learning_goal =</span> <span class="st">&quot;Create a numeric vector and calculate its mean.&quot;</span>,</span>
 <span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>    <span class="at">introduction =</span> <span class="fu">paste</span>(</span>
 <span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>      <span class="st">&quot;A clinic intake sheet lists systolic blood pressure readings for&quot;</span>,</span>
-<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>      <span class="st">&quot;three patients seen before lunch.&quot;</span></span>
-<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>    ),</span>
-<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>    <span class="at">challenge =</span> <span class="fu">paste</span>(</span>
-<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>      <span class="st">&quot;Create a vector with the values 120, 130, and 140.&quot;</span>,</span>
-<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>      <span class="st">&quot;What is the average systolic blood pressure? Submit the mean.&quot;</span></span>
-<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>    ),</span>
-<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>    <span class="at">hints =</span> <span class="fu">c</span>(</span>
-<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>      <span class="st">&quot;Use c() to combine the three readings into one vector.&quot;</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>    <span class="st">&quot;three patients seen before lunch.&quot;</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>  ),</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>  <span class="at">challenge =</span> <span class="fu">paste</span>(</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>      <span class="st">&quot;Create a vector with the values 120, 124, 111, 182, 130, and 145.&quot;</span>,</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>      <span class="st">&quot;What is the average systolic blood pressure? Submit the mean, rounded to 1 decimal.&quot;</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>  ),</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>  <span class="at">hints =</span> <span class="fu">c</span>(</span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>      <span class="st">&quot;Use c() to combine multiple readings into one vector.&quot;</span>,</span>
 <span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>      <span class="st">&quot;Use mean() to calculate the average of a numeric vector.&quot;</span></span>
-<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>    ),</span>
-<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>    <span class="at">correct_result =</span> <span class="dv">130</span>,</span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>  ),</span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>    <span class="at">correct_result =</span> <span class="fl">133.3</span>,</span>
 <span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>    <span class="at">success =</span> <span class="st">&quot;The intake sheet is complete, and the first cabinet opens.&quot;</span>,</span>
-<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>    <span class="at">failure =</span> <span class="st">&quot;Not quite. Check that all three readings are included before taking the mean.&quot;</span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>    <span class="at">failure =</span> <span class="st">&quot;Not quite, young doctor. Check that all readings are included before taking the mean.&quot;</span></span>
 <span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a>  )</span>
 <span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a></span>
 <span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a>  riskcat <span class="ot">&lt;-</span> <span class="fu">new_room</span>(</span>
@@ -680,32 +700,140 @@ medicine example, the submitted file would look like this:</p>
 <span id="cb7-71"><a href="#cb7-71" tabindex="-1"></a>    )</span>
 <span id="cb7-72"><a href="#cb7-72" tabindex="-1"></a>  )</span>
 <span id="cb7-73"><a href="#cb7-73" tabindex="-1"></a>}</span></code></pre></div>
-<p>Then add a small test file, for example
-<code>tests/testthat/test-room-pack-medicine.R</code>:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;medicine room pack can be registered and played&quot;</span>, {</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  pack <span class="ot">&lt;-</span> <span class="fu">medicine_room_pack</span>()</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="fu">register_room_pack</span>(pack, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="fu">expect_true</span>(<span class="fu">all</span>(<span class="fu">c</span>(<span class="st">&quot;bpmean&quot;</span>, <span class="st">&quot;riskcat&quot;</span>, <span class="st">&quot;posprop&quot;</span>) <span class="sc">%in%</span> <span class="fu">list_rooms</span>()<span class="sc">$</span>id))</span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">build_escape</span>(<span class="st">&quot;medfull&quot;</span>)<span class="sc">$</span>room_ids, <span class="fu">c</span>(<span class="st">&quot;bpmean&quot;</span>, <span class="st">&quot;riskcat&quot;</span>, <span class="st">&quot;posprop&quot;</span>))</span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>  <span class="fu">expect_true</span>(pack<span class="sc">$</span>rooms[[<span class="dv">1</span>]]<span class="sc">$</span><span class="fu">checker</span>(<span class="dv">130</span>))</span>
-<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>  <span class="fu">expect_true</span>(pack<span class="sc">$</span>rooms[[<span class="dv">2</span>]]<span class="sc">$</span><span class="fu">checker</span>(<span class="st">&quot;high&quot;</span>))</span>
-<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>  <span class="fu">expect_true</span>(pack<span class="sc">$</span>rooms[[<span class="dv">3</span>]]<span class="sc">$</span><span class="fu">checker</span>(<span class="fl">0.2</span>))</span>
-<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>})</span></code></pre></div>
-<p>In a pull request, include:</p>
+<p>Room IDs must be unique across all bundled and contributed rooms.
+Pack IDs and named escape IDs must likewise avoid existing registered
+IDs. Keep every ID to at most eight letters, numbers, or underscores,
+beginning with a letter.</p>
+</div>
+<div id="add-the-pack-to-the-package-catalogue" class="section level3">
+<h3>6.2 Add the pack to the package catalogue</h3>
+<p>Defining <code>medicine_room_pack()</code> is not enough to make its
+rooms available to users. Add a call to the factory inside
+<code>.bundled_room_packs()</code> in
+<code>R/bundled-packs.R</code>:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>.bundled_room_packs <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>    <span class="fu">medicine_room_pack</span>()</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  )</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>}</span></code></pre></div>
+<p>If the catalogue already contains packs, retain them and add the new
+factory as another list element:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>.bundled_room_packs <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>    <span class="fu">existing_room_pack</span>(),</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>    <span class="fu">medicine_room_pack</span>()</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  )</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>}</span></code></pre></div>
+<p>When <code>escapeR</code> loads, its <code>.onLoad()</code> hook
+registers every pack in this list. Consequently, users do not need to
+call <code>register_room_pack()</code> for a bundled contribution: its
+rooms appear in <code>list_rooms()</code>, its named sequences appear in
+<code>list_escapes()</code>, and those sequences work with
+<code>build_escape()</code> immediately.</p>
+<p>Do not add a registration call to an example or vignette as a
+substitute for the catalogue entry. Such a call affects only the R
+session in which that example happens to run.</p>
+</div>
+<div id="add-any-supporting-data" class="section level3">
+<h3>6.3 Add any supporting data</h3>
+<p>If a room needs a small data file, add it under
+<code>inst/extdata/</code> and locate it in the challenge with
+<code>escapeR_file()</code>. Use a distinctive file name to avoid
+collisions. The room and its tests must not depend on files that exist
+only on the contributor’s computer.</p>
+<p>For example, a room could direct students to read:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">read.csv</span>(<span class="fu">escapeR_file</span>(<span class="st">&quot;medicine-example.csv&quot;</span>))</span></code></pre></div>
+<p>Keep contributed data small, document their origin and licence in the
+pull request, and include only data that the package is permitted to
+redistribute.</p>
+</div>
+<div id="add-end-to-end-tests" class="section level3">
+<h3>6.4 Add end-to-end tests</h3>
+<p>Add a focused test file such as
+<code>tests/testthat/test-room-pack-medicine.R</code>. Tests should
+verify permanent registration and should submit answers through the
+exported game interface. That is more useful than calling a room’s
+internal checker directly because it also tests registration, escape
+construction, room order, progress, and submission handling.</p>
+<p><code>testthat</code> is an R package for writing automated checks of
+code behaviour. A call to <code>test_that()</code> groups checks for one
+behaviour and gives that group a descriptive name. Inside it, functions
+beginning with <code>expect_</code> state what should be true: for
+example, <code>expect_equal()</code> compares values,
+<code>expect_true()</code> requires a true result, and
+<code>expect_error()</code> requires an error. When an expectation
+fails, <code>testthat</code> reports the failed expectation and its
+location in the test file. This makes it easier to detect when a later
+code change breaks a room that previously worked.</p>
+<p>For example:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;medicine room pack is registered and playable&quot;</span>, {</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="fu">expect_true</span>(<span class="fu">all</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>    <span class="fu">c</span>(<span class="st">&quot;bpmean&quot;</span>, <span class="st">&quot;riskcat&quot;</span>, <span class="st">&quot;posprop&quot;</span>) <span class="sc">%in%</span> <span class="fu">list_rooms</span>()<span class="sc">$</span>id</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  ))</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  <span class="fu">expect_true</span>(<span class="fu">all</span>(<span class="fu">c</span>(<span class="st">&quot;medmini&quot;</span>, <span class="st">&quot;medfull&quot;</span>) <span class="sc">%in%</span> <span class="fu">list_escapes</span>()<span class="sc">$</span>id))</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>  medicine_escape <span class="ot">&lt;-</span> <span class="fu">build_escape</span>(<span class="st">&quot;medfull&quot;</span>)</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>  <span class="fu">expect_equal</span>(</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>    medicine_escape<span class="sc">$</span>room_ids,</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>    <span class="fu">c</span>(<span class="st">&quot;bpmean&quot;</span>, <span class="st">&quot;riskcat&quot;</span>, <span class="st">&quot;posprop&quot;</span>)</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>  )</span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>  player <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;medicine_test_&quot;</span>, <span class="fu">Sys.getpid</span>())</span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>  <span class="fu">escape</span>(<span class="at">player =</span> player, <span class="at">reset =</span> <span class="cn">TRUE</span>, <span class="at">escape =</span> medicine_escape)</span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a></span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>  <span class="fu">expect_false</span>(<span class="fu">submit</span>(<span class="dv">100</span>))</span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a>  <span class="fu">expect_true</span>(<span class="fu">submit</span>(<span class="fl">133.3</span>))</span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a>  <span class="fu">expect_true</span>(<span class="fu">submit</span>(<span class="st">&quot; HIGH &quot;</span>))</span>
+<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a>  <span class="fu">expect_true</span>(<span class="fu">submit</span>(<span class="fl">0.2</span>))</span>
+<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a>})</span></code></pre></div>
+<p>Use a unique test-player name so repeated test runs do not reuse
+another test’s progress. Test at least one incorrect answer and every
+correct answer in the sequence. If a room uses a custom checker, include
+representative accepted and rejected submissions for that checker.</p>
+<p>The tests use <code>testthat</code>. Its expectations describe the
+required behaviour:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">expect_true</span>(x <span class="sc">&gt;</span> <span class="dv">0</span>)             <span class="co"># a condition holds</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="fu">expect_false</span>(<span class="fu">is.na</span>(x))         <span class="co"># a condition does not hold</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="fu">expect_equal</span>(result, <span class="dv">4</span>)        <span class="co"># two values are equal</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="fu">expect_error</span>(<span class="fu">log</span>(<span class="st">&quot;text&quot;</span>))      <span class="co"># an error is triggered</span></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="fu">expect_warning</span>(<span class="fu">sqrt</span>(<span class="sc">-</span><span class="dv">1</span>))       <span class="co"># a warning is triggered</span></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="fu">expect_type</span>(x, <span class="st">&quot;double&quot;</span>)       <span class="co"># typeof(x) is &quot;double&quot;</span></span></code></pre></div>
+<p>Package tests belong under <code>tests/testthat/</code>. Run them
+locally with:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">test</span>()</span></code></pre></div>
+<p>If <code>testthat</code> is new to you, see the <a href="#appendix-testthat-primer">testthat primer</a> at the end of this
+vignette. It explains the structure of a test, the main expectation
+functions and their arguments, and how to interpret a failure.</p>
+</div>
+<div id="render-documentation-and-check-the-package" class="section level3">
+<h3>6.5 Render documentation and check the package</h3>
+<p>Run the full package checks before opening the pull request:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">document</span>()</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">test</span>()</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">check</span>()</span></code></pre></div>
+<p>Also open the rendered vignettes and play the contributed escape once
+in a fresh R session. Check that the story, hints, failure messages,
+room order, and all required files make sense from a student’s
+perspective.</p>
+</div>
+<div id="open-the-pull-request" class="section level3">
+<h3>6.6 Open the pull request</h3>
+<p>The pull request should contain:</p>
 <ol style="list-style-type: decimal">
-<li>The room-pack file.</li>
-<li>A short test file.</li>
-<li>Any small data files, if needed, under
-<code>inst/extdata/</code>.</li>
-<li>A short README or vignette paragraph if the pack introduces a new
+<li>The room-pack factory file.</li>
+<li>The new entry in <code>R/bundled-packs.R</code>.</li>
+<li>An end-to-end test file.</li>
+<li>Any supporting data under <code>inst/extdata/</code>, with source
+and licensing details.</li>
+<li>Documentation changes if the pack introduces a new workflow or
 teaching theme.</li>
 </ol>
-<p>If the pull request is accepted, the pack can be integrated into the
-package by keeping the submitted room-pack function and registering the
-pack from package code or examples. The room IDs and escape sequence IDs
-then become available to other users through <code>list_rooms()</code>,
-<code>list_escapes()</code>, and <code>build_escape()</code>.</p>
+<p>In the pull-request description, summarize the learning goals, list
+the new room and escape IDs, explain any data provenance, and report the
+result of <code>devtools::check()</code>. Reviewers can then evaluate
+both the teaching design and the technical integration from one
+self-contained contribution.</p>
+</div>
 </div>
 <div id="design-advice" class="section level2">
 <h2>Design advice</h2>
@@ -723,9 +851,164 @@ predictable;</li>
 <li>use short stable IDs that will not clash with other packs.</li>
 </ul>
 <p>The ecology rooms bundled with <code>escapeR</code> are one theme.
-The same architecture can support medicine, agriculture, social
-sciences, and many other domains, as long as each room remains a small,
-testable R learning step.</p>
+The same architecture can support other domains, as long as each room
+remains a small, testable R learning step.</p>
+</div>
+<div id="appendix-testthat-primer" class="section level2">
+<h2>Appendix: a testthat primer</h2>
+<div id="what-testthat-does" class="section level3">
+<h3>What testthat does</h3>
+<p><code>testthat</code> is an R package for checking automatically that
+code behaves as intended. Each test runs some code and compares the
+observed result with an expected result. A passing test is normally
+quiet; a failing test identifies the expectation that failed, shows the
+difference when possible, and reports the file and line where it
+occurred.</p>
+<p>Tests are useful because a room that works today can be broken
+accidentally by a later change to registration, answer checking, or
+player progress. Re-running the tests checks the old behaviour without
+requiring someone to play every escape manually.</p>
+<p>In an R package, test files conventionally live under
+<code>tests/testthat/</code> and have names beginning with
+<code>test-</code>, for example:</p>
+<pre class="text"><code>tests/testthat/test-room-pack-medicine.R</code></pre>
+<p>The package lists <code>testthat</code> under <code>Suggests</code>
+in <code>DESCRIPTION</code>. The line
+<code>Config/testthat/edition: 3</code> tells <code>testthat</code> that
+the package uses its third edition of testing behaviour.</p>
+</div>
+<div id="the-anatomy-of-a-test" class="section level3">
+<h3>The anatomy of a test</h3>
+<p>Most tests follow three small steps:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Arrange:</strong> create the objects or state needed by the
+test.</li>
+<li><strong>Act:</strong> run the code whose behaviour is being
+tested.</li>
+<li><strong>Assert:</strong> use one or more <code>expect_*()</code>
+functions to state the expected result.</li>
+</ol>
+<p><code>test_that(description, code)</code> groups related
+expectations:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;a correct answer advances the player&quot;</span>, {</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="co"># Arrange</span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  player <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;medicine_test_&quot;</span>, <span class="fu">Sys.getpid</span>())</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>  medicine_escape <span class="ot">&lt;-</span> <span class="fu">build_escape</span>(<span class="st">&quot;medmini&quot;</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>  <span class="fu">escape</span>(<span class="at">player =</span> player, <span class="at">reset =</span> <span class="cn">TRUE</span>, <span class="at">escape =</span> medicine_escape)</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>  <span class="co"># Act and assert</span></span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>  <span class="fu">expect_false</span>(<span class="fu">submit</span>(<span class="dv">100</span>))</span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>  <span class="fu">expect_true</span>(<span class="fu">submit</span>(<span class="fl">133.3</span>))</span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>})</span></code></pre></div>
+<p>The first argument is a short description of the behaviour. The
+second is the block of R code inside <code>{}</code>. If an expectation
+fails, that description helps identify what stopped working.</p>
+</div>
+<div id="common-expectations-and-their-main-arguments" class="section level3">
+<h3>Common expectations and their main arguments</h3>
+<p>An expectation receives the value or expression being checked as its
+first argument. Common expectations include:</p>
+<ul>
+<li><code>expect_true(object)</code> and
+<code>expect_false(object)</code> require <code>object</code> to
+evaluate to exactly <code>TRUE</code> or <code>FALSE</code>.</li>
+<li><code>expect_equal(object, expected, tolerance = NULL)</code>
+compares values while allowing small numerical differences. Use
+<code>tolerance</code> when floating-point calculations need an explicit
+margin.</li>
+<li><code>expect_identical(object, expected)</code> is stricter: values
+must have the same type and attributes as well as the same
+contents.</li>
+<li><code>expect_length(object, n)</code> requires an object to have
+length <code>n</code>.</li>
+<li><code>expect_type(object, type)</code> checks the base type returned
+by <code>typeof()</code>, such as <code>&quot;double&quot;</code>,
+<code>&quot;integer&quot;</code>, or <code>&quot;list&quot;</code>.</li>
+<li><code>expect_s3_class(object, class)</code> checks that an object
+inherits from an S3 class.</li>
+<li><code>expect_match(object, regexp)</code> checks text against a
+regular expression.</li>
+<li><code>expect_error(object, regexp = NULL)</code>,
+<code>expect_warning()</code>, and <code>expect_message()</code> require
+an expression to produce the named condition. A <code>regexp</code> can
+also check part of its message.</li>
+<li><code>expect_no_error(object)</code> requires an expression to
+finish without an error.</li>
+</ul>
+<p>Many expectations also accept <code>info</code>, an optional
+explanatory message added to a failure report. It can be helpful when
+the reason for an expectation is not obvious:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">expect_equal</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>  medicine_escape<span class="sc">$</span>room_ids,</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">&quot;bpmean&quot;</span>, <span class="st">&quot;riskcat&quot;</span>, <span class="st">&quot;posprop&quot;</span>),</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>  <span class="at">info =</span> <span class="st">&quot;The full medicine escape must preserve its teaching order&quot;</span></span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>)</span></code></pre></div>
+<p>Prefer the most specific expectation that expresses the intended
+behaviour. For example, <code>expect_equal(answer, 4)</code> usually
+produces a clearer failure than
+<code>expect_true(answer == 4)</code>.</p>
+</div>
+<div id="testing-errors-and-approximate-numbers" class="section level3">
+<h3>Testing errors and approximate numbers</h3>
+<p>To test that invalid input is rejected, put the expression that
+should fail inside <code>expect_error()</code>:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">expect_error</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>  <span class="fu">build_escape</span>(<span class="st">&quot;unknown_escape&quot;</span>),</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>  <span class="at">regexp =</span> <span class="st">&quot;unknown&quot;</span></span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>)</span></code></pre></div>
+<p>The expression is evaluated by the expectation; it is not run
+beforehand. Omitting <code>regexp</code> checks only that some error
+occurs. Including it also checks that the message contains the expected
+text.</p>
+<p>Computers sometimes store calculated decimal values with tiny
+rounding differences. In those cases, compare with a tolerance:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">expect_equal</span>(calculated_proportion, <span class="fl">0.2</span>, <span class="at">tolerance =</span> <span class="fl">1e-8</span>)</span></code></pre></div>
+<p>Do not use a large tolerance merely to make a test pass: it should
+reflect the precision that the room genuinely promises.</p>
+</div>
+<div id="running-tests" class="section level3">
+<h3>Running tests</h3>
+<p>From the package project, the usual command is:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">test</span>()</span></code></pre></div>
+<p>This loads the package’s development code and runs the files under
+<code>tests/testthat/</code>. During development,
+<code>devtools::test(filter = &quot;medicine&quot;)</code> can run only test files
+whose names match <code>medicine</code>. The <code>filter</code> value
+matches the part after <code>test-</code> and before
+<code>.R</code>.</p>
+<p>Two lower-level <code>testthat</code> functions are also useful:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">test_file</span>(<span class="st">&quot;tests/testthat/test-room-pack-medicine.R&quot;</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>testthat<span class="sc">::</span><span class="fu">test_dir</span>(<span class="st">&quot;tests/testthat&quot;</span>)</span></code></pre></div>
+<p><code>test_file(path)</code> runs one file, whereas
+<code>test_dir(path, filter = NULL)</code> runs a directory of tests and
+can select matching files with <code>filter</code>. Both accept a
+<code>reporter</code> argument that controls how results are displayed,
+but their defaults are normally suitable for interactive work.</p>
+<p>Before a pull request, use <code>devtools::check()</code> as well. It
+runs a broader R package check that includes the tests plus checks of
+documentation, examples, dependencies, and package structure.</p>
+</div>
+<div id="reading-a-failure" class="section level3">
+<h3>Reading a failure</h3>
+<p>A failure means that observed behaviour did not match an expectation;
+it does not necessarily mean that the expectation is correct. Read the
+reported test description, file and line, then compare the actual and
+expected values. Ask:</p>
+<ol style="list-style-type: decimal">
+<li>Did the implementation change accidentally?</li>
+<li>Is the test using the right setup and player state?</li>
+<li>If behaviour changed deliberately, should the test and documentation
+both be updated?</li>
+</ol>
+<p>Do not replace an expected value merely to silence a failure. First
+establish which behaviour the package is meant to guarantee.</p>
+<p>For contributed room packs, a useful end-to-end test verifies that
+the rooms and named escapes are registered, confirms their order, starts
+a uniquely named test player, rejects at least one incorrect answer, and
+accepts every correct answer. This exercises the same exported functions
+that a learner uses and is why the example in Step 6 tests more than
+each room’s checker in isolation.</p>
+</div>
 </div>
 
 

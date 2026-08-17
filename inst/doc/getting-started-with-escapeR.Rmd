@@ -1,0 +1,232 @@
+---
+title: "Getting started with escapeR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with escapeR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(escapeR)
+```
+
+`escapeR` is a small escape-room game for learning R through ecological
+statistics. Each room gives you a thread of the whole story, a task, and a lock. You solve the task
+with ordinary R commands, then submit the answer to move to the next room.
+
+The bundled quest starts with R foundations and moves through data import,
+visualisation, data manipulation, simple ecological modelling, distance-sampling
+ideas, and reproducible workflows.
+
+## Start your first quest
+
+To start playing you simply need to load the package and call `escape()`:
+
+```{r, eval = FALSE}
+library(escapeR)
+escape()
+```
+
+In an interactive R session, `escape()` asks for your player name. Use a short
+name you can remember, because `escapeR` saves your progress under that name.
+
+You can also provide your player name directly:
+
+```{r, eval = FALSE}
+escape(player = "ana")
+```
+
+The first room is then printed in the console. It includes:
+
+- the room number and title;
+- a short introduction;
+- the task you need to solve;
+- the learning goal for that room.
+
+The task is solved outside the game prompt. Use R as you normally would: create
+objects, inspect data, calculate values, make plots, or fit models. When you
+think you have the answer, submit it.
+
+## Submit an answer
+
+Use `submit()` with the answer that should open the current lock:
+
+```{r, eval = FALSE}
+submit(70)
+```
+
+If the answer is correct, `escapeR` shows the success message and moves you to
+the next room. If the answer is not correct, the room remains locked and you can
+try again.
+
+While numeric answers are submitted as is, text answers should be submitted as character strings:
+
+```{r, eval = FALSE}
+submit("negative")
+submit(".qmd")
+```
+
+For simple text locks, `escapeR` ignores leading and trailing spaces and is not
+case-sensitive. Numeric answers are checked with a small tolerance unless a room
+uses a custom checker.
+
+## Ask for a hint
+
+If you get stuck, call `hint()`:
+
+```{r, eval = FALSE}
+hint()
+```
+
+Some rooms have more than one hint. Repeated calls reveal the hints in order:
+
+```{r, eval = FALSE}
+hint()
+hint()
+```
+
+Hints are meant to nudge you toward the R idea rather than simply giving away
+the answer. In a classroom, it is usually worth trying the task first, asking R
+what objects you have created, and then requesting a hint if the lock is still
+not opening.
+
+## See the current room again
+
+If the console has filled up with other work, call `play()`:
+
+```{r, eval = FALSE}
+play()
+```
+
+`play()` does not restart the game. It simply prints the current room again, so
+you can reread the task and learning goal.
+
+## Check your status
+
+Use `status()` to see where you are:
+
+```{r, eval = FALSE}
+status()
+```
+
+This tells you the active player, how many rooms have been solved out of those in the game, and which room is current. It is useful during longer activities or when returning to the game after a break.
+
+## Resume later
+
+Progress is saved automatically for each player using
+`tools::R_user_dir("escapeR", "data")`. To resume, load the package and call
+`escape()` again with the same player name:
+
+```{r, eval = FALSE}
+library(escapeR)
+escape(player = "ana")
+```
+
+If saved progress exists for that player, the game resumes from the current
+room. If no saved progress exists, a new quest starts.
+
+## Restart a quest
+
+To restart the active player's quest from the beginning, call:
+
+```{r, eval = FALSE}
+reset_game()
+```
+
+You can also reset a named player:
+
+```{r, eval = FALSE}
+reset_game(player = "ana")
+```
+
+Or start again directly with `escape(reset = TRUE)`:
+
+```{r, eval = FALSE}
+escape(player = "ana", reset = TRUE)
+```
+
+Use resetting with care in class: it deliberately starts that player's progress
+again from room 1, so all previous progress is lost.
+
+## Find the bundled data files
+
+Several rooms ask you to read or inspect files included with the package. Use
+`escapeR_file()` to find them. As an example, if a data file was called "dataX.csv" you would use
+
+```{r, eval=FALSE}
+escapeR_file("dataX.csv")
+```
+
+For example, a room might ask you to read a CSV file and then inspect it. One option would then be
+
+```{r, eval = FALSE}
+d <- read.csv(escapeR_file("dataX.csv"))
+head(d)
+```
+
+The package also provides a separate, small survey data set. `survey_counts()`
+returns this data frame directly; it does not read or modify `dados1.csv`. Store
+the returned data frame in an object before working with it:
+
+```{r}
+survey <- survey_counts()
+names(survey)
+head(survey)
+sum(is.na(survey))
+```
+
+It has five named columns (`site`, `habitat`, `count`, `distance_m`, and
+`detected`). Two values in `count` are `NA`, included deliberately for the data
+quality exercise. By contrast, `dados1.csv` has four columns and no missing
+values. The survey data set appears in several rooms about data quality,
+summaries, modelling, and distance sampling.
+
+## See available rooms
+
+Use `list_rooms()` to inspect the bundled room sequence:
+
+```{r}
+list_rooms()
+```
+
+The `id` column is useful when building a shorter custom quest, where you can provide a list of rooms to be played as a separate quest. See next section and the corresponding dedicated vignette for details on how to create new rooms and quests.
+
+## Play a shorter or custom quest
+
+Instructors can build a quest from selected room IDs, as an example here, a mini 3-room quest:
+
+```{r, eval = FALSE}
+short_quest <- build_escape(c("console", "vector", "plotwin"))
+escape(player = "demo_short", reset = TRUE, escape = short_quest)
+```
+
+The same `escape()` command starts the custom sequence. The only difference is
+that the `escape` argument receives an escape sequence created with
+`build_escape()`.
+
+If room packs have been registered, `list_escapes()` shows named sequences:
+
+```{r}
+list_escapes()
+```
+
+Those named sequences can also be passed to `build_escape()`.
+
+## Useful commands
+
+Here is the core command set while playing:
+
+```{r, eval = FALSE}
+escape()       # start or resume a quest
+play()         # show the current room again
+hint()         # request the next hint
+submit(70)     # submit an answer
+status()       # check progress
+reset_game()   # restart the active quest
+list_rooms()   # inspect available rooms
+```
+
+The most important habit is to solve the room in ordinary R first. The game is
+the lock; R is the key. Can you get out?

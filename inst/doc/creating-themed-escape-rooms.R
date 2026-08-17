@@ -14,16 +14,16 @@ bpmean <- new_room(
     "three patients seen before lunch."
   ),
   challenge = paste(
-    "Create a vector with the values 120, 130, and 140.",
-    "What is the average systolic blood pressure? Submit the mean."
+    "Create a vector with the values 120, 124, 111, 182, 130, and 145.",
+    "What is the average systolic blood pressure? Submit the mean, rounded to 1 decimal."
   ),
   hints = c(
-    "Use c() to combine the three readings into one vector.",
+    "Use c() to combine multiple readings into one vector.",
     "Use mean() to calculate the average of a numeric vector."
   ),
-  correct_result = 130,
+  correct_result = 133.3,
   success = "The intake sheet is complete, and the first cabinet opens.",
-  failure = "Not quite. Check that all three readings are included before taking the mean."
+  failure = "Not quite, young doctor. Check that all readings are included before taking the mean."
 )
 
 riskcat <- new_room(
@@ -93,7 +93,7 @@ medicine_escape$room_ids
 # escape(player = "demo_medicine", reset = TRUE, escape = medicine_escape)
 # 
 # # Room 1 answer
-# submit(130)
+# submit(133.3)
 # 
 # # Room 2 answer
 # submit("high")
@@ -129,19 +129,19 @@ trend <- new_room(
 #     learning_goal = "Create a numeric vector and calculate its mean.",
 #     introduction = paste(
 #       "A clinic intake sheet lists systolic blood pressure readings for",
-#       "three patients seen before lunch."
-#     ),
-#     challenge = paste(
-#       "Create a vector with the values 120, 130, and 140.",
-#       "What is the average systolic blood pressure? Submit the mean."
-#     ),
-#     hints = c(
-#       "Use c() to combine the three readings into one vector.",
+#     "three patients seen before lunch."
+#   ),
+#   challenge = paste(
+#       "Create a vector with the values 120, 124, 111, 182, 130, and 145.",
+#       "What is the average systolic blood pressure? Submit the mean, rounded to 1 decimal."
+#   ),
+#   hints = c(
+#       "Use c() to combine multiple readings into one vector.",
 #       "Use mean() to calculate the average of a numeric vector."
-#     ),
-#     correct_result = 130,
+#   ),
+#     correct_result = 133.3,
 #     success = "The intake sheet is complete, and the first cabinet opens.",
-#     failure = "Not quite. Check that all three readings are included before taking the mean."
+#     failure = "Not quite, young doctor. Check that all readings are included before taking the mean."
 #   )
 # 
 #   riskcat <- new_room(
@@ -196,14 +196,75 @@ trend <- new_room(
 # }
 
 ## ----eval = FALSE-------------------------------------------------------------
-# test_that("medicine room pack can be registered and played", {
-#   pack <- medicine_room_pack()
-#   register_room_pack(pack, replace = TRUE)
+# test_that("medicine room pack is registered and playable", {
+#   expect_true(all(
+#     c("bpmean", "riskcat", "posprop") %in% list_rooms()$id
+#   ))
+#   expect_true(all(c("medmini", "medfull") %in% list_escapes()$id))
 # 
-#   expect_true(all(c("bpmean", "riskcat", "posprop") %in% list_rooms()$id))
-#   expect_equal(build_escape("medfull")$room_ids, c("bpmean", "riskcat", "posprop"))
-#   expect_true(pack$rooms[[1]]$checker(130))
-#   expect_true(pack$rooms[[2]]$checker("high"))
-#   expect_true(pack$rooms[[3]]$checker(0.2))
+#   medicine_escape <- build_escape("medfull")
+#   expect_equal(
+#     medicine_escape$room_ids,
+#     c("bpmean", "riskcat", "posprop")
+#   )
+# 
+#   player <- paste0("medicine_test_", Sys.getpid())
+#   escape(player = player, reset = TRUE, escape = medicine_escape)
+# 
+#   expect_false(submit(100))
+#   expect_true(submit(133.3))
+#   expect_true(submit(" HIGH "))
+#   expect_true(submit(0.2))
 # })
+
+## ----eval = FALSE-------------------------------------------------------------
+# expect_true(x > 0)             # a condition holds
+# expect_false(is.na(x))         # a condition does not hold
+# expect_equal(result, 4)        # two values are equal
+# expect_error(log("text"))      # an error is triggered
+# expect_warning(sqrt(-1))       # a warning is triggered
+# expect_type(x, "double")       # typeof(x) is "double"
+
+## ----eval = FALSE-------------------------------------------------------------
+# devtools::test()
+
+## ----eval = FALSE-------------------------------------------------------------
+# devtools::document()
+# devtools::test()
+# devtools::check()
+
+## ----eval = FALSE-------------------------------------------------------------
+# test_that("a correct answer advances the player", {
+#   # Arrange
+#   player <- paste0("medicine_test_", Sys.getpid())
+#   medicine_escape <- build_escape("medmini")
+#   escape(player = player, reset = TRUE, escape = medicine_escape)
+# 
+#   # Act and assert
+#   expect_false(submit(100))
+#   expect_true(submit(133.3))
+# })
+
+## ----eval = FALSE-------------------------------------------------------------
+# expect_equal(
+#   medicine_escape$room_ids,
+#   c("bpmean", "riskcat", "posprop"),
+#   info = "The full medicine escape must preserve its teaching order"
+# )
+
+## ----eval = FALSE-------------------------------------------------------------
+# expect_error(
+#   build_escape("unknown_escape"),
+#   regexp = "unknown"
+# )
+
+## ----eval = FALSE-------------------------------------------------------------
+# expect_equal(calculated_proportion, 0.2, tolerance = 1e-8)
+
+## ----eval = FALSE-------------------------------------------------------------
+# devtools::test()
+
+## ----eval = FALSE-------------------------------------------------------------
+# testthat::test_file("tests/testthat/test-room-pack-medicine.R")
+# testthat::test_dir("tests/testthat")
 
