@@ -156,6 +156,16 @@ register_rooms(parasite_room)
 build_escape(c("console", "paras"))
 ```
 
+To make a coursework room and submit it as an R file through Moodle, start
+with the simple student guide:
+
+```r
+vignette("student-room-coursework", package = "escapeR")
+```
+
+It includes a complete ecological example, a reusable `.R` template, and
+steps for editing, playing, and submitting your own room.
+
 To learn how to create themed rooms and room packs:
 
 ```r

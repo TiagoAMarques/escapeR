@@ -26,6 +26,11 @@ New rooms and quests are welcome. To contribute them to `escapeR`, submit a
 GitHub pull request containing the room-pack definition, its registration entry,
 tests, and any data files it needs. The complete process is described below.
 
+For coursework submissions through Moodle, start with
+[Make your own room: a simple coursework guide](student-room-coursework.html).
+It explains how to edit and submit a single `.R` file. The guide below describes
+the fuller route for creating themed packs and contributing them to the package.
+
 ## The room architecture
 
 Every room is built from eleven components, although some are optional:

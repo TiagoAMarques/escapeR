@@ -1,0 +1,232 @@
+---
+title: "Make your own room: a simple coursework guide"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Make your own room: a simple coursework guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+You have used R to open a door. Now you can design a door for someone else.
+Perhaps your puzzle involves snails in quadrats, fish lengths, bird nests, or
+plants in different habitats. Pick something you understand and help another
+student practise one useful idea.
+
+For this coursework, your contribution is an R file containing your room.
+You can submit that file through Moodle. Your teacher will set the deadline,
+the number of rooms to submit, and the extra points available. A room does not
+need complicated code to be useful: a clear question and a working answer are
+a good starting point.
+
+## The short version
+
+1. Start with the example below and save it as a `.R` file.
+2. Change it into your own ecological puzzle.
+3. Play it and check a wrong answer, the hints, and the correct answer.
+4. Upload the `.R` file to the coursework submission on Moodle.
+
+The rest of this guide walks you through those four steps. You can use the
+same R and RStudio setup you use for practical classes.
+
+## 1. Start with a working example
+
+In RStudio, choose **File > New File > R Script**. Copy the following code into
+the script and save it. For example, a student with number 19549 might name
+the file `19549_snail_room.R`. Use your own number and a short name for your
+topic. Keep the `.R` ending.
+
+This is a complete example. First try it unchanged so you can see how it works;
+then make your own version for submission.
+
+```{r room-template, eval = FALSE, code = readLines(system.file("templates", "student-room.R", package = "escapeR"), warn = FALSE)}
+```
+
+You can also copy the supplied template into your working folder by running
+these lines in the Console:
+
+```{r, eval = FALSE}
+file.copy(
+  system.file("templates", "student-room.R", package = "escapeR"),
+  "my-room.R"
+)
+```
+
+Open `my-room.R` in RStudio and save your edited version with your student
+number in its filename. If `file.copy()` returns `FALSE`, check whether a file
+with that name already exists and choose a new filename.
+
+### What those lines mean
+
+`library(escapeR)` makes the game's tools available. `new_room(...)` creates a
+room from the information between its brackets. `my_room <-` gives the room
+an object name, so R can refer to it later. The final `register_rooms(...)`
+line makes the room available to play in the current R session.
+
+Most of your editing will be ordinary text between quotation marks. Lines
+beginning with `#` are comments: notes for you and your teacher. R does not
+run them.
+
+## 2. Make the example yours
+
+Choose the question first. Solve it yourself in R before writing the story.
+Here are a few manageable ideas:
+
+- Calculate the mean length of a small sample of fish.
+- Find the proportion of nests containing eggs.
+- Count how many quadrats have more than five plants.
+- Compare an observed count with a model prediction.
+- Find a particular value in a small table of species counts.
+
+Pick an idea related to something you have practised in class. Keep one main
+task per room. The challenge should give another student enough information
+to solve it without asking you for the data or guessing your intention.
+
+Edit these parts of the template:
+
+| Part | What to put there |
+| --- | --- |
+| Comments at the top | Your name, student number, course topic, data source, and worked R solution |
+| `id` | A short code for your room, starting with a letter and at most 8 characters |
+| `module` | The topic, such as `"Probability"` or `"Ecological summaries"` |
+| `title` | A short name for the room |
+| `learning_goal` | One sentence saying what someone will practise |
+| `introduction` | A short story explaining the locked door |
+| `challenge` | The ecological question, its data, units, and the answer to submit |
+| `hints` | Three clues, from a small nudge to a clear R suggestion |
+| `correct_result` | The answer you calculated yourself |
+| `success` | A message for someone who solves the puzzle |
+| `failure` | A helpful message for someone who tries a wrong answer |
+
+For an ID, you could use `s` followed by the last five digits of your student
+number and a letter: `s19549a`, then `s19549b` for a second room. Use your own
+number. Keep this ID different from existing rooms; `en01` to `en25` already
+belong to the course. You can inspect existing IDs with `list_rooms()`.
+
+### Keep the question and answer in agreement
+
+In the example, the counts are 2, 4, and 6. Check their mean in the Console:
+
+```{r}
+mean(c(2, 4, 6))
+```
+
+That is why the template says `correct_result = 4`. If you change the counts,
+calculate the new answer and update `correct_result`, the hints, and the
+worked solution in your comments. Updating only the question leaves the lock
+checking the old answer.
+
+For a number, write the number without quotes: `correct_result = 4`. For a
+word, use quotes: `correct_result = "wetland"`. Text answers ignore case and
+spaces at the beginning or end.
+
+If your question requests rounding, state it clearly, for example: "Submit the
+mean in cm, rounded to two decimal places." Calculate that rounded answer
+with `round(...)` and put it in `correct_result`. For this simple template,
+students should submit the requested rounded value; the default numeric
+checker uses a small numerical tolerance.
+
+### Use data everyone can access
+
+For a first room, put a few values directly in the challenge. Invented data
+are fine for a teaching puzzle: say they are invented in your comments.
+For real data, record their source and include any permission or licence
+information needed to share them.
+
+If you need a separate data file, include it with the submission and explain
+how to read it. Use a relative filename such as `"snails.csv"` so your teacher
+can put the files in one folder and run the example. Include units and explain
+what each column represents. Small self-contained examples are easier to
+review and reuse.
+
+## 3. Play your room
+
+Save the script after editing. In the Console, run the following commands,
+using the actual name of your saved file:
+
+```{r, eval = FALSE}
+source("19549_snail_room.R")
+escape(player = "my_room_test", reset = TRUE, escape = my_room$id)
+```
+
+`source()` runs the saved script. The second line starts a new test game
+containing your one room. The room should appear on screen.
+
+If R cannot find the script, use RStudio's **Source** button with the script
+open, then run the `escape(...)` line in the Console. This avoids having to
+type its location.
+
+For the unchanged snail example, try these commands in order:
+
+```{r, eval = FALSE}
+submit(5)       # A wrong answer should leave the door locked.
+hint()         # The first clue should appear.
+hint()         # The second clue should appear.
+hint()         # The final clue should help you solve the task in R.
+submit(4)       # The correct answer should open the door.
+```
+
+For your own puzzle, choose a wrong answer and your calculated correct answer.
+For a word answer, use quotes, for example `submit("wetland")`.
+
+After another edit, save and source the file again, then repeat the test.
+`replace = TRUE` lets your newly edited definition replace your own previously
+registered room with the same ID. Registration lasts for the current R session;
+source your file again after restarting R.
+
+### If R reports an error
+
+- Check that every quoted sentence has both an opening and a closing quote.
+- Keep commas between the entries in `new_room(...)` and between hints.
+- Keep the closing brackets from the template.
+- Check that you saved the file before sourcing it.
+- Check the Console's error message for the line or object to inspect.
+
+If a sentence contains a quote, use single quotes inside the sentence, as in
+`"The sign says 'Count the snails'."`. Change one part at a time and rerun the
+script; it is easier to find a small mistake that way.
+
+Ask a classmate to play the room without seeing your solution. If they cannot
+tell which quantity or units to submit, clarify the question before submitting.
+
+## 4. Submit through Moodle
+
+Upload your saved `.R` file to the coursework submission indicated by your
+teacher. For a self-contained room, that one file is enough. Your teacher can
+read the code, source the file, and play your room.
+
+Before uploading, check:
+
+- The filename identifies you, and the comments include your name and number.
+- The room practises a course idea and has an ecological question with clear units.
+- The comments include your worked R solution and explain where the data came from.
+- The wrong answer fails, the correct answer works, and all three hints make sense.
+- You included any separate data files and instructions they need.
+
+You can also write a short note in Moodle describing what the room teaches
+and anything you would like feedback on. Follow the assignment's instructions
+for any additional explanation or reflection.
+
+## Optional: contribute through GitHub
+
+If you already use GitHub and want the room considered for inclusion in the
+package, the contribution route is a pull request: a proposal that the
+maintainer can review before adding your changes.
+
+The package's existing
+[room-authoring guide](creating-themed-escape-rooms.html) explains how to put
+rooms into a pack, add that pack to the package catalogue, and check that it
+works. Open it in R with:
+
+```{r, eval = FALSE}
+vignette("creating-themed-escape-rooms", package = "escapeR")
+```
+
+Use that route when you want to prepare a package contribution. The Moodle
+`.R` file route is sufficient for submitting this coursework; your teacher
+can help adapt a submitted room into a package contribution later. Follow the
+course's submission instructions so your contribution can be matched to you
+for assessment.
