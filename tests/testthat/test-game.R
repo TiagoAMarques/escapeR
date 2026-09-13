@@ -1,9 +1,10 @@
 test_that("rooms can be listed", {
   rooms <- list_rooms()
-  expect_equal(nrow(rooms), 20)
+  builtin <- rooms[rooms$id %in% escapeR:::.builtin_room_ids(), ]
+  expect_equal(nrow(builtin), 20)
   expect_true(all(c("room", "id", "module", "title", "learning_goal") %in% names(rooms)))
   expect_true(all(nchar(rooms$id) <= 8))
-  expect_equal(tail(rooms$id, 2), c("webglm", "quarto"))
+  expect_equal(tail(builtin$id, 2), c("webglm", "quarto"))
 })
 
 test_that("game can start and accept first answer", {

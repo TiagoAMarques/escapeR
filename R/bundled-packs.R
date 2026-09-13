@@ -1,5 +1,5 @@
 .bundled_room_packs <- function() {
-  list()
+  list(ecologia_numerica_room_pack())
 }
 
 .register_bundled_room_packs <- function(packs = .bundled_room_packs()) {

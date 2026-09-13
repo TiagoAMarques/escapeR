@@ -68,6 +68,27 @@ To start over:
 reset_game()
 ```
 
+## Ecologia Numérica: 25 lectures
+
+The `en2026` escape follows the 25 EN2026 lecture decks, with one room per
+lecture. It starts with R as a calculator and continues through probability,
+sampling, experimental design, hypothesis tests, ANOVA, regression, GLMs and
+GAMs, contingency tables, likelihood, clustering, and PCA. All puzzle data are
+included in the questions; no downloads or additional packages are required.
+
+```r
+library(escapeR)
+escape(player = "your_name", escape = "en2026")
+```
+
+To resume, call `escape(player = "your_name")` without the `escape` argument.
+Passing `escape` again starts a new sequence. `enintro` contains just the first
+room. Use `hint()` for progressive help and `submit(your_answer)` to unlock
+each door. Numerical answers accept the requested rounding or greater precision.
+
+Teachers can find the lecture mapping, assumptions, and worked solutions in
+[the Ecologia Numérica guide](inst/course-guides/ecologia-numerica.md).
+
 ## The Quest
 
 The current escape has 20 rooms across seven parts of an introductory
