@@ -3,8 +3,10 @@
 .state$progress <- NULL
 
 .progress_dir <- function() {
-  path <- tools::R_user_dir("escapeR", which = "data")
+  path <- getOption("escapeR.progress_dir", tools::R_user_dir("escapeR", which = "data"))
+  if (!is.character(path) || length(path) != 1L || is.na(path) || !nzchar(path)) stop("Invalid escapeR.progress_dir option.", call. = FALSE)
   dir.create(path, recursive = TRUE, showWarnings = FALSE)
+  if (!dir.exists(path)) stop("Cannot create progress directory: ", path, call. = FALSE)
   path
 }
 
@@ -29,7 +31,15 @@
 .load_progress <- function(player) {
   file <- .progress_file(player)
   if (file.exists(file)) {
-    progress <- readRDS(file)
+    progress <- tryCatch(readRDS(file), error = function(e) {
+      stop("Cannot read saved progress. Use delete_progress(player) or restart with reset = TRUE.", call. = FALSE)
+    })
+    if (!is.list(progress) || !is.character(progress$player) || length(progress$player) != 1L || is.na(progress$player) || !is.numeric(progress$room) || length(progress$room) != 1L || is.na(progress$room) || !is.finite(progress$room) || progress$room < 1) {
+      stop("Invalid saved progress. Use delete_progress(player) or restart with reset = TRUE.", call. = FALSE)
+    }
+    if (!identical(tolower(progress$player), tolower(player))) {
+      stop("This player name maps to another saved profile. Choose a different name.", call. = FALSE)
+    }
     if (is.null(progress$escape_ids)) {
       progress$escape_ids <- .builtin_room_ids()
     }
@@ -103,7 +113,14 @@
 
 .save_progress <- function(progress) {
   progress$updated <- Sys.time()
-  saveRDS(progress, .progress_file(progress$player))
+  file <- .progress_file(progress$player)
+  if (file.exists(file)) {
+    saved <- tryCatch(readRDS(file), error = function(e) NULL)
+    if (is.list(saved) && is.character(saved$player) && length(saved$player) == 1L && !is.na(saved$player) && !identical(tolower(saved$player), tolower(progress$player))) {
+      stop("This player name maps to another saved profile. Choose a different name.", call. = FALSE)
+    }
+  }
+  saveRDS(progress, file)
   invisible(progress)
 }
 
@@ -112,4 +129,40 @@
     stop("No active escapeR game. Run escape() first.", call. = FALSE)
   }
   invisible(.state$progress)
+}
+
+#' Delete a saved player profile
+#'
+#' @param player Single non-empty player name. Defaults to the active player.
+#' @return Invisibly returns whether a saved file was removed.
+#' @details Progress is stored in the per-user data directory returned by
+#'   `tools::R_user_dir()`. Set `options(escapeR.progress_dir = path)` to choose
+#'   another directory, including temporary storage for demonstrations.
+#'   Delete profiles when they are no longer needed. Player filenames are
+#'   case-insensitive and punctuation is replaced by underscores.
+#' @export
+#' @examples
+#' local({
+#'   path <- tempfile("escapeR-demo-")
+#'   old <- options(escapeR.progress_dir = path)
+#'   on.exit(options(old))
+#'   on.exit(unlink(path, recursive = TRUE), add = TRUE)
+#'   escape(player = "demo", reset = TRUE)
+#'   submit(70)
+#'   delete_progress("demo")
+#' })
+delete_progress <- function(player = .state$player) {
+  if (!is.character(player) || length(player) != 1L || is.na(player) ||
+      !nzchar(trimws(player))) {
+    stop("Provide a single non-empty player name.", call. = FALSE)
+  }
+  player <- trimws(player)
+  file <- .progress_file(player)
+  removed <- file.exists(file)
+  if (removed && !file.remove(file)) stop("Cannot remove saved progress.", call. = FALSE)
+  if (!is.null(.state$player) && identical(.progress_file(.state$player), file)) {
+    .state$player <- NULL
+    .state$progress <- NULL
+  }
+  invisible(removed)
 }

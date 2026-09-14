@@ -230,3 +230,13 @@ list_rooms()   # inspect available rooms
 
 The most important habit is to solve the room in ordinary R first. The game is
 the lock; R is the key. Can you get out?
+
+## Managing saved profiles
+
+Remove a saved profile with `delete_progress("ana")` when it is no longer
+needed. `delete_progress()` removes the active profile and closes that game.
+Set `options(escapeR.progress_dir = "path")` to select a different directory.
+For demonstrations, use temporary storage and clean it up afterwards. Profiles
+are case-insensitive; punctuation is replaced by underscores in filenames.
+Names that map to another player's saved file are rejected. An unreadable save
+can be removed or deliberately restarted with `escape(player, reset = TRUE)`.

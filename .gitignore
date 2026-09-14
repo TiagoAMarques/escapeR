@@ -4,3 +4,9 @@
 .Ruserdata
 /doc/
 /Meta/
+
+# Generated release/check artifacts
+/release-checks/
+/inst/doc/
+/*.Rcheck/
+/escapeR_*.tar.gz

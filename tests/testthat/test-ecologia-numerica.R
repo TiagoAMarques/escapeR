@@ -47,6 +47,7 @@
 }
 
 test_that("the EN course is bundled in lecture order with source references", {
+  local_test_progress()
   sequence <- build_escape("en2026")
   expect_equal(sequence$room_ids, sprintf("en%02d", 1:25))
   expect_equal(build_escape("enintro")$room_ids, "en01")
@@ -63,6 +64,7 @@ test_that("the EN course is bundled in lecture order with source references", {
 })
 
 test_that("independently calculated ecological answers unlock every EN room", {
+  local_test_progress()
   answers <- .en_test_answers()
   for (i in seq_along(answers)) {
     id <- sprintf("en%02d", i)
@@ -87,9 +89,7 @@ test_that("independently calculated ecological answers unlock every EN room", {
 })
 
 test_that("students can play all 25 EN rooms and resume their saved sequence", {
-  savedir <- tempfile("en-progress-")
-  dir.create(savedir)
-  local_mocked_bindings(.progress_dir = function() savedir, .package = "escapeR")
+  local_test_progress()
   player <- paste0("en_semester_", Sys.getpid())
   escape(player = player, reset = TRUE, escape = "en2026")
   expect_false(submit(0))

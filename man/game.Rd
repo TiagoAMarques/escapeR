@@ -25,3 +25,7 @@ list_rooms()
 }
 \value{\code{play()}, \code{hint()}, \code{status()}, and \code{reset_game()} return useful game objects invisibly. \code{submit()} invisibly returns whether the answer was correct. \code{list_rooms()} returns a data frame with room IDs, modules, titles, and learning goals.}
 \description{Functions used by students to move through the virtual escape room.}
+
+\examples{
+head(list_rooms())
+}

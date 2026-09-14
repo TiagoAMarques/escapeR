@@ -2,3 +2,14 @@
 ^\.Rproj\.user$
 ^doc$
 ^Meta$
+^QuickCode4Tests[.]R$
+^LICENSE$
+^man/figures$
+^cran-comments[.]md$
+^CRAN-.*[.]md$
+^release-checks$
+^.*[.]Rcheck$
+^escapeR_.*[.]tar[.]gz$
+^[.]github$
+
+^scripts$

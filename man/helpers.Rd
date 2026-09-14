@@ -12,3 +12,7 @@ survey_counts()
 }
 \value{\code{escapeR_file()} returns a file path, and \code{survey_counts()} returns a data frame.}
 \description{Small helper functions used by the escape-room puzzles.}
+\examples{
+head(survey_counts())
+read.csv(escapeR_file("survey_counts.csv"))
+}

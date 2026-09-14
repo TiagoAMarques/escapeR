@@ -1,4 +1,5 @@
 test_that("rooms can be listed", {
+  local_test_progress()
   rooms <- list_rooms()
   builtin <- rooms[rooms$id %in% escapeR:::.builtin_room_ids(), ]
   expect_equal(nrow(builtin), 20)
@@ -8,12 +9,14 @@ test_that("rooms can be listed", {
 })
 
 test_that("game can start and accept first answer", {
+  local_test_progress()
   player <- paste0("test_", Sys.getpid())
   escape(player = player, reset = TRUE)
   expect_true(submit(70))
 })
 
 test_that("escape command is not accepted as a player name", {
+  local_test_progress()
   expect_error(
     escape(player = "escape()"),
     "looks like an R command"
@@ -21,6 +24,7 @@ test_that("escape command is not accepted as a player name", {
 })
 
 test_that("vector room has sequential hints and updated answer", {
+  local_test_progress()
   room <- escapeR:::.rooms()[[2]]
   expect_equal(room$id, "vector")
   expect_false(grepl("c\\(", room$task))
@@ -34,6 +38,7 @@ test_that("vector room has sequential hints and updated answer", {
 })
 
 test_that("finding data room uses the Loblolly growth answer", {
+  local_test_progress()
   room <- escapeR:::.rooms()[[3]]
   expect_equal(room$id, "finddata")
   expect_equal(room$title, "Finding Data")
@@ -45,6 +50,7 @@ test_that("finding data room uses the Loblolly growth answer", {
 })
 
 test_that("custom rooms can be registered and composed", {
+  local_test_progress()
   addon <- new_room(
     id = "addon1",
     module = "Contributed rooms",
@@ -90,6 +96,7 @@ test_that("custom rooms can be registered and composed", {
 })
 
 test_that("room packs register rooms and named escapes", {
+  local_test_progress()
   med_room1 <- new_room(
     id = "bpmean",
     module = "Medicine",
@@ -127,6 +134,7 @@ test_that("room packs register rooms and named escapes", {
 })
 
 test_that("bundled room packs are registered through the package hook", {
+  local_test_progress()
   bundled_room <- new_room(
     id = "hookroom",
     module = "Contributor test",
@@ -156,6 +164,7 @@ test_that("bundled room packs are registered through the package hook", {
 })
 
 test_that("helper data have expected shape", {
+  local_test_progress()
   d <- survey_counts()
   expect_equal(nrow(d), 20)
   expect_equal(sum(is.na(survey_counts())), 2)
@@ -167,6 +176,7 @@ test_that("helper data have expected shape", {
 })
 
 test_that("plotting room uses survey_counts data", {
+  local_test_progress()
   room <- escapeR:::.rooms()[[7]]
   expect_equal(room$id, "plotwin")
   expect_match(room$task, "survey_counts\\(\\)")
@@ -176,6 +186,7 @@ test_that("plotting room uses survey_counts data", {
 })
 
 test_that("hidden data room checks answer and custom failure message", {
+  local_test_progress()
   room <- escapeR:::.rooms()[[9]]
   expect_equal(room$title, "The Hidden Data")
   expect_equal(length(room$hint), 4)
@@ -191,6 +202,7 @@ test_that("hidden data room checks answer and custom failure message", {
 })
 
 test_that("web GLM room is before final room and checks rounded coefficient", {
+  local_test_progress()
   rooms <- escapeR:::.rooms()
   room <- rooms[[length(rooms) - 1L]]
   expect_equal(room$id, "webglm")
@@ -205,6 +217,7 @@ test_that("web GLM room is before final room and checks rounded coefficient", {
 })
 
 test_that("old default saved games migrate to include web GLM room", {
+  local_test_progress()
   old_ids <- c(
     "console", "vector", "finddata", "datatab", "columns", "missing",
     "plotwin", "habitat", "hidden", "subset", "sorting", "model",
@@ -221,6 +234,7 @@ test_that("old default saved games migrate to include web GLM room", {
 })
 
 test_that("completed or custom saved games are not migrated", {
+  local_test_progress()
   completed <- escapeR:::.new_progress("migration_done", escape_ids = c("comment", "quarto"))
   completed$completed <- TRUE
   custom <- escapeR:::.new_progress("migration_custom", escape_ids = c("comment", "quarto"))
@@ -230,6 +244,7 @@ test_that("completed or custom saved games are not migrated", {
 })
 
 test_that("old progress history shapes are normalized", {
+  local_test_progress()
   old_history <- data.frame(
     room = 1L,
     id = "console",
@@ -246,6 +261,7 @@ test_that("old progress history shapes are normalized", {
 })
 
 test_that("submit can append to old progress history", {
+  local_test_progress()
   builtin_ids <- escapeR:::.builtin_room_ids()
   progress <- escapeR:::.new_progress("old_history")
   progress$escape_ids <- builtin_ids
@@ -267,6 +283,7 @@ test_that("submit can append to old progress history", {
 })
 
 test_that("final challenge responds to player choice", {
+  local_test_progress()
   expect_message(
     expect_message(
       escapeR:::.final_challenge("learner", choice = "Yes"),

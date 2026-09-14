@@ -15,7 +15,10 @@ escape <- function(player = NULL, reset = FALSE, escape = NULL) {
     player <- readline("Player name: ")
   }
 
-  player <- trimws(as.character(player)[1])
+  if (!is.character(player) || length(player) != 1L || is.na(player)) {
+    stop("Player must be a single non-empty name.", call. = FALSE)
+  }
+  player <- trimws(player)
   if (!nzchar(player)) {
     stop("Player name cannot be empty.", call. = FALSE)
   }
@@ -206,14 +209,19 @@ reset_game <- function(player = NULL) {
     }
     player <- .state$player
   }
+  if (!is.character(player) || length(player) != 1L || is.na(player) || !nzchar(trimws(player))) {
+    stop("Player must be a single non-empty name.", call. = FALSE)
+  }
+  player <- trimws(player)
   escape_ids <- if (is.null(.state$progress$escape_ids)) {
     .builtin_room_ids()
   } else {
     .state$progress$escape_ids
   }
   progress <- .new_progress(player, escape_ids = escape_ids)
+  progress <- .save_progress(progress)
   .state$player <- player
-  .state$progress <- .save_progress(progress)
+  .state$progress <- progress
   message("Progress reset for ", player, ".")
   play()
   invisible(progress)

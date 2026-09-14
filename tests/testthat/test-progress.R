@@ -1,0 +1,31 @@
+test_that("profiles can be deleted without leaving an active game", {
+  local_test_progress()
+  escape("cleanup", reset = TRUE)
+  expect_true(file.exists(escapeR:::.progress_file("cleanup")))
+  expect_true(delete_progress())
+  expect_false(file.exists(escapeR:::.progress_file("cleanup")))
+  expect_null(escapeR:::.state$progress)
+  expect_false(delete_progress("cleanup"))
+  expect_error(delete_progress(NA_character_), "non-empty")
+})
+test_that("corrupt saves can be deliberately restarted", {
+  local_test_progress()
+  file <- escapeR:::.progress_file("corrupt")
+  writeLines("invalid RDS", file)
+  expect_error(escape("corrupt"), "Cannot read saved progress")
+  escape("corrupt", reset = TRUE)
+  expect_equal(readRDS(file)$room, 1L)
+  saveRDS(list(player = "corrupt"), file)
+  expect_error(escape("corrupt"), "Invalid saved progress")
+})
+test_that("sanitized names cannot overwrite another player", {
+  local_test_progress()
+  escape("first.player", reset = TRUE)
+  expect_error(escape("first player"), "another saved profile")
+  expect_error(escape("first player", reset = TRUE), "another saved profile")
+  expect_error(reset_game("first player"), "another saved profile")
+  expect_equal(readRDS(escapeR:::.progress_file("first.player"))$player, "first.player")
+  for (bad in list(NA_character_, character(), c("one", "two"))) {
+    expect_error(escape(bad), "single non-empty")
+  }
+})

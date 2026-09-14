@@ -37,3 +37,14 @@ register_rooms(..., replace = FALSE)
 }
 \value{\code{build_escape()} returns an escape sequence object for \code{escape()}. \code{list_escapes()} returns a data frame of registered sequences. \code{new_room()} returns a modular room object. \code{new_room_pack()} returns a shareable room pack. Registration helpers return IDs invisibly.}
 \description{Helpers for composing custom escape-room sequences and adding contributed rooms or room packs.}
+\examples{
+build_escape(c("console", "vector"))$room_ids
+list_escapes()
+room <- new_room(
+  id = "meanroom", module = "Arithmetic", title = "A field sample",
+  learning_goal = "Calculate a mean", introduction = "Three samples await.",
+  challenge = "Submit the mean of 1, 2 and 3.", hints = "Use mean().",
+  correct_result = 2, success = "The door opens."
+)
+room$id
+}

@@ -187,3 +187,13 @@ instructor-authored room packs, Shiny or learnr front ends, classroom
 leaderboards, and export of student progress.
 
 ![The escapeR Expectation vs Reality](man/figures/escapeR_Expectation_vs_Reality.png)
+
+## Saved profiles
+
+Progress files are small and stored in `tools::R_user_dir("escapeR", "data")`.
+Remove profiles when no longer needed with `delete_progress("player")`.
+Calling `delete_progress()` removes the active profile and closes that game.
+Select another directory with `options(escapeR.progress_dir = "path")`.
+For demonstrations, use a temporary directory and remove it afterwards.
+Names are case-insensitive; punctuation becomes underscores in filenames.
+The game rejects names that collide with another saved profile.

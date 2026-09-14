@@ -1,6 +1,6 @@
 #' escapeR: escape room adventures for learning R
 #'
-#' Load the package in an interactive R session to enter the room, or call
+#' Load the package, then enter a room by calling
 #' [escape()] explicitly.
 #'
 #' To learn how to play, see `vignette("getting-started-with-escapeR",
