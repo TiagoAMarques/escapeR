@@ -23,3 +23,8 @@ saved player progress, and tools for instructors to create rooms and room packs.
 Tests: 466 passing assertions, no failures, warnings or skips.
 
 Other-platform and R-devel results must be added after those checks have run.
+
+## Distribution rights and attribution
+
+The maintainer has confirmed distribution rights and attribution for all
+included material (14 September 2026).

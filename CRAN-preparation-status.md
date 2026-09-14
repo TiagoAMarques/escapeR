@@ -61,12 +61,12 @@ reservation; recheck if submission is delayed.
    These platform results have not run locally. CI rebuilds vignettes but skips
    PDF manuals; the local full check covers the manual.
 
-3. **Confirm distribution rights and credit.** Check that you own or have a
-   compatible license/permission for all lecture-derived material, data and
-   images. Preserve required attribution. Review Authors@R: it retains the
-   original OpenAI Codex contributor entry, separately from your acknowledgement
-   in NEWS.md. This is an authorship review item, not a demonstrated check error.
-   If something needs changing, change it before rebuilding the submission.
+3. **Distribution rights and attribution: complete.** Tiago confirmed
+   distribution rights and attribution for all included material on
+   14 September 2026. Keep attribution and permissions intact when adding or
+   editing material. Authors@R retains the original OpenAI Codex contributor
+   entry, separately from the acknowledgement in NEWS.md; its presentation
+   remains an optional metadata review item.
 
 4. **Review the external-data room.** webglm asks students to read an Elsevier
    supplementary CSV. It is not automatically downloaded in package checks;
